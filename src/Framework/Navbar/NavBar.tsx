@@ -2,7 +2,10 @@ import { FaChevronDown } from 'react-icons/fa'
 import { GiChickenOven } from 'react-icons/gi'
 import  BrandIconUrl from '../../../public/images-logo/PLANNING BY DAY Logo - Original.svg';
 
-export function Navbar() {
+interface Props {
+  childrens: any;
+}
+export function Navbar(props: Props ) {
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
