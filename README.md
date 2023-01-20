@@ -8,3 +8,4 @@ Pour démarrer en version dev :
     - React.js
     - Vite.js
     - TailwindCSS
+    - daisyUI
