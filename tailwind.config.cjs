@@ -4,7 +4,7 @@ const chroma = require('chroma-js');
 const R = require('ramda');
 
 const colors = {
-  base: '#a3bbad',
+  base: '#fefee2',
   primary: "#0e3b43",
   secondary: "#357266",
 
@@ -42,4 +42,14 @@ module.exports = {
     },
   },
   plugins: [require("daisyui")],
+  daisyui: {
+    styled: true,
+    themes: true,
+    base: true,
+    utils: true,
+    logs: true,
+    rtl: false,
+    prefix: "",
+    darkTheme: "dark",
+  },
 }

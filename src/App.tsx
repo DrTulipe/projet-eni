@@ -4,7 +4,6 @@ import { AppConfigRouter } from "./Router/AppConfigRouter";
 import { TestPage } from "./TestPage";
 
 export function App() {
-  return <TestPage />
   return (
     <BrowserRouter>
       <AppConfigRouter />

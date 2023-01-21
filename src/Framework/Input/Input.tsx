@@ -20,7 +20,7 @@ export const Input: React.FC<Props> = ({name, label, type, defaultValue, require
   return (<>
   <div className="flex flex-col gap-2">
     {label && <label className={labelClasses} htmlFor={inputId}>
-      <div>{label}</div>
+      {/* <div>{label}</div> */}
        {required && (<div><FaAsterisk className="text-red-500 text-sm" /></div>)}
     </label>}
     <input
@@ -38,5 +38,3 @@ export const Input: React.FC<Props> = ({name, label, type, defaultValue, require
 Input.defaultProps = {
   type: 'text'
 };
-
-export default Input;
