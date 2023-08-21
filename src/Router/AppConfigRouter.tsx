@@ -1,4 +1,4 @@
-import { LoginPage } from "../Login/LoginPage";
+import { LoginPage, isLogged } from "../Login/LoginPage";
 import { TestPage } from "../TestPage";
 import React from "react";
 
@@ -17,12 +17,18 @@ export function AppConfigRouter() {
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/test" element={<TestPage />} />
-        <Route path="/planning" element={<Planning />} />
-        <Route path="/account" element={<LoginPage />} />
-        <Route path="/logout" element={<LoginPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        {isLogged ? <>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/test" element={<TestPage />} />
+          <Route path="/planning" element={<Planning />} />
+          <Route path="/account" element={<LoginPage />} />
+          <Route path="/logout" element={<LoginPage />} />
+        </>
+          :
+          <>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+          </>}
       </Routes>
     </>
   );
