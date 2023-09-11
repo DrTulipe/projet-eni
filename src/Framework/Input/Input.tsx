@@ -32,7 +32,7 @@ export const Input: React.ForwardRefRenderFunction<HTMLInputElement, Props> = (
         className={inputClasses}
         name={name}
         type={type}
-        ref={ref}
+        //ref={ref}
         defaultValue={defaultValue}
         placeholder={placeholder || label || undefined}
       />

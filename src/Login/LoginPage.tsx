@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { InputForwarded } from '../Framework/Input/Input';
 
-export let isLogged: boolean = false;
+export let isLogged: boolean = true;
 
 // export function LoginPage() {
 //     return <div >

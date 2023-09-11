@@ -56,7 +56,7 @@ export function Navbar() {
                 <li>
                   <a
                     onClick={() => {
-                      navigate("/account");
+                      navigate("/compte");
                     }}
                   >
                     Mon compte
