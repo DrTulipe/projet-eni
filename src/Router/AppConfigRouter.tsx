@@ -11,6 +11,8 @@ import {
 import { Navbar } from "../Framework/Navbar/NavBar";
 import { LandingPage } from "../LandingPage/LandingPage";
 import { Planning } from "../Planning/Planning";
+import { Compte } from "../Compte/Compte";
+import { Formations } from "../Formations/Formations";
 
 export function AppConfigRouter() {
   return (
@@ -23,6 +25,8 @@ export function AppConfigRouter() {
           <Route path="/planning" element={<Planning />} />
           <Route path="/account" element={<LoginPage />} />
           <Route path="/logout" element={<LoginPage />} />
+          <Route path="/compte" element={<Compte />} />
+          <Route path="/formations" element={<Formations />} />
         </>
           :
           <>
