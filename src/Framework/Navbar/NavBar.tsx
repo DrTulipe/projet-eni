@@ -52,7 +52,7 @@ export function Navbar() {
                 Espace personnel
                 <FaChevronDown />
               </a>
-              <ul className="p-2 bg-base-100">
+              <ul className="p-2 bg-base-100" style={{ zIndex: 99 }}>
                 <li>
                   <a
                     onClick={() => {
