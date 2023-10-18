@@ -16,6 +16,28 @@ export function FilterToolBarPlanning() {
             { value: "quimper", label: "Quimper" },
         ]}
       />
+      <InputSelect
+        name={"selectPromo"}
+        label={"Sélectionner une promo"}
+        values={[
+            { value: "ms2da", label: "MS2D_012A" },
+            { value: "ms2db", label: "MS2D_012B" },
+            { value: "cda1", label: "CDA_001P" },
+            { value: "cda2", label: "CDA_002P" },
+            { value: "cda3", label: "CDA_003P" },
+        ]}
+      />
+      <InputSelect
+        name={"selectFormateur"}
+        label={"Sélectionner un formateur"}
+        values={[
+            { value: "didier", label: "Lionel Deglise" },
+            { value: "michel", label: "Olivier Piers" },
+            { value: "jean", label: "Glorya Metay" },
+            { value: "jacques", label: "Stéphane Gobin" },
+            { value: "golman", label: "Béatrice Nourry" },
+        ]}
+      />
     </FilterBar>
   );
 }

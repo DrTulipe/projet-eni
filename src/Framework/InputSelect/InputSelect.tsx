@@ -25,7 +25,6 @@ function AlimenterSelect(props: Props) {
         {label}
       </option>
       {values.map((e: InputSelectValueLabel) => {
-        console.log("TEST",e)
         return (
           <option selected accessKey={e.value}>
             {e.label}
