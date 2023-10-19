@@ -2,8 +2,10 @@ import { Container } from "../Framework/Container/Container";
 import BrandIconUrl from "../../public/images-logo/PLANNING BY DAY Logo - Original (1).svg";
 import planning from "../../public/planificateur.png";
 import formations from "../../public/planification.png";
+import { isLogged } from "../Login/LoginPage";
 
 export function LandingPage() {
+  if (!isLogged) return null;
   return (
     <Container noOverflow center>
       {/* Parent div to manage layout */}

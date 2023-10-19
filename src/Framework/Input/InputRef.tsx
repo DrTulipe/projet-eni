@@ -11,7 +11,7 @@ type Props = {
   placeholder?: string;
 };
 
-export const Input: React.ForwardRefRenderFunction<HTMLInputElement, Props> = (
+export const InputRef: React.ForwardRefRenderFunction<HTMLInputElement, Props> = (
   { name, label, type='text', defaultValue, required, placeholder },
   ref
 ) => {
@@ -33,10 +33,12 @@ export const Input: React.ForwardRefRenderFunction<HTMLInputElement, Props> = (
         name={name}
         type={type}
         width={250}
-        //  ref={ref}
+         ref={ref}
         defaultValue={defaultValue}
         placeholder={placeholder || label || undefined}
       />
     </div>
   );
 };
+
+export const InputForwarded = forwardRef(InputRef);
