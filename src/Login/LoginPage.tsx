@@ -8,6 +8,11 @@ export function LoginPage() {
   const passwordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
+  const isLogged = localStorage.getItem("isLogged");
+  useEffect(() => {
+    if (isLogged === "true") navigate("/");
+  }, [isLogged]);
+
   const [apiResponse, setApiResponse] = useState<{ result: any; error: any }>({
     result: null,
     error: null,

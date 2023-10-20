@@ -10,8 +10,9 @@ export async function ApiPost(url: string, datas: any) {
       },
       body: JSON.stringify(datas),
     });
-
-    return { result: await response.json(), error: null };
+    const data = await response.json();
+    if (data && data.trace) return { result: null, error: data };
+    return { result: data, error: null };
   } catch (errorCatch) {
     console.error("Erreur lors de la requête POST:", errorCatch);
     return { result: null, error: errorCatch };

@@ -29,6 +29,15 @@ export function Navbar() {
             <li>
               <a
                 onClick={() => {
+                  navigate("/admin");
+                }}
+              >
+                Admin
+              </a>
+            </li>
+            <li>
+              <a
+                onClick={() => {
                   navigate("/planning");
                 }}
               >
@@ -38,19 +47,19 @@ export function Navbar() {
             <li>
               <a
                 onClick={() => {
-                  navigate("/admin");
+                  navigate("/support");
                 }}
               >
-                Admin
+                Support
               </a>
             </li>
             <li tabIndex={0}>
               <a>
-                <div className="avatar">
+                {/* <div className="avatar">
                   <div className="w-10 rounded-full">
                     <img src="https://placeimg.com/192/192/people" />
                   </div>
-                </div>
+                </div> */}
                 Espace personnel
                 <FaChevronDown />
               </a>

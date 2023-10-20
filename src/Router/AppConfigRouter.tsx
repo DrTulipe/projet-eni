@@ -14,6 +14,7 @@ import { Planning } from "../Planning/Planning";
 import { Compte } from "../Compte/Compte";
 import { Formations } from "../Formations/Formations";
 import { AdminPanel } from "../Admin/AdminPanel";
+import { SupportPage } from "../Support/SupportPage";
 export function AppConfigRouter() {
   const isLogged = localStorage.getItem("isLogged");
   useCheckConnection();
@@ -29,6 +30,7 @@ export function AppConfigRouter() {
             <Route path="/account" element={<LoginPage />} />
             <Route path="/compte" element={<Compte />} />
             <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/support" element={<SupportPage />} />
             <Route path="/formations" element={<Formations />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/logout" element={<LoginPage />} />
