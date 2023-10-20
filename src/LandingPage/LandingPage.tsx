@@ -2,10 +2,12 @@ import { Container } from "../Framework/Container/Container";
 import BrandIconUrl from "../../public/images-logo/PLANNING BY DAY Logo - Original (1).svg";
 import planning from "../../public/planificateur.png";
 import formations from "../../public/planification.png";
-import { isLogged } from "../Login/LoginPage";
+import { useNavigate } from "react-router";
 
 export function LandingPage() {
-  if (!isLogged) return null;
+  const isLogged = localStorage.getItem("isLogged");
+  const navigate = useNavigate();
+  if (!isLogged || isLogged === "false") return null;
   return (
     <Container noOverflow center>
       {/* Parent div to manage layout */}
@@ -35,7 +37,7 @@ export function LandingPage() {
               en attente de validation
             </p>
             <div className="card-actions justify-end">
-              <button className="btn btn-primary">
+              <button className="btn btn-primary" onClick={()=> navigate("/formations")}>
                 Aller à la gestion des formations
               </button>
             </div>
@@ -53,7 +55,7 @@ export function LandingPage() {
           <div className="card-body">
             <h2 className="card-title">Planning</h2>
             <p>Gestion du planning global, vision par mois ou par semaine</p>
-            <div className="card-actions justify-end">
+            <div className="card-actions justify-end" onClick={()=> navigate("/planning")}>
               <button className="btn btn-primary">Accéder au planning</button>
             </div>
           </div>

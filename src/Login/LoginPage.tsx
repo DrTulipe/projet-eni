@@ -2,9 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ApiPost } from "../Framework/useApi/useApiPost";
 import { InputForwarded } from "../Framework/Input/InputRef";
-const token = localStorage.getItem("token");
-
-export let isLogged: boolean = false;
 
 export function LoginPage() {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -23,7 +20,7 @@ export function LoginPage() {
     }
     if (apiResponse.result.token) {
       localStorage.setItem("token", apiResponse.result.token);
-      isLogged = true;
+      localStorage.setItem("isLogged", "true");
       navigate("/"); // Redirige vers la page d'accueil
     }
   }, [apiResponse, navigate]);
@@ -82,24 +79,29 @@ export function LoginPage() {
 
 // Fonction pour vérifier la connexion
 export function useCheckConnection() {
+  const isLogged = localStorage.getItem("isLogged");
+
   const navigate = useNavigate();
   useEffect(() => {
     const checkConnection = async () => {
       try {
         const { error, result } = await ApiPost(
-          "https://127.0.0.1:8000/api/login_check",
-          {
-            token: token,
-          }
+          "https://127.0.0.1:8000/api/token/validate",
+          {}
         );
 
-        if (!result.token || error) {
+        if (
+          result === null ||
+          !result.valid ||
+          result.valid !== true ||
+          error
+        ) {
           console.log("Connection KO!");
-          isLogged = false;
+          localStorage.setItem("isLogged", "false");
           navigate("/login");
         } else {
-          console.log("Connection OK!");
-          isLogged = true;
+          localStorage.setItem("isLogged", "true");
+          console.log("Connection OK!", isLogged);
         }
       } catch (error) {
         console.error("Erreur lors de la vérification de la connexion:", error);

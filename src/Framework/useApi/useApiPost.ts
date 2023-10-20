@@ -1,11 +1,12 @@
-import { useState } from "react";
-
 export async function ApiPost(url: string, datas: any) {
+  const token = localStorage.getItem("token");
+  console.log("ApiPost", token);
   try {
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(datas),
     });

@@ -3,9 +3,11 @@ import { FaChevronDown } from "react-icons/fa";
 import { GiChickenOven } from "react-icons/gi";
 import BrandIconUrl from "../../../public/images-logo/PLANNING BY DAY Logo - Original.svg";
 import { useNavigate } from "react-router-dom";
-import { isLogged } from "../../Login/LoginPage";
 
 export function Navbar() {
+  const isLogged = localStorage.getItem("isLogged");
+
+  console.log("Navbar", isLogged);
   const navigate = useNavigate();
   return (
     <div className="navbar bg-base-100">
@@ -22,7 +24,7 @@ export function Navbar() {
         </a>
       </div>
       <div className="flex-none">
-        {isLogged ?
+        {isLogged === "true" ? (
           <ul className="menu menu-horizontal px-1">
             <li>
               <a
@@ -36,10 +38,10 @@ export function Navbar() {
             <li>
               <a
                 onClick={() => {
-                  navigate("/test");
+                  navigate("/admin");
                 }}
               >
-                Test page
+                Admin
               </a>
             </li>
             <li tabIndex={0}>
@@ -74,7 +76,9 @@ export function Navbar() {
                 <li>
                   <a
                     onClick={() => {
-                      navigate("/logout");
+                      localStorage.setItem("token", "INVALID_TOKEN");
+                      localStorage.setItem("isLogged", "false");
+                      navigate("/login");
                     }}
                   >
                     Me déconnecter
@@ -83,14 +87,16 @@ export function Navbar() {
               </ul>
             </li>
           </ul>
-          : <div className="flex-1">
+        ) : (
+          <div className="flex-1">
             <a
               href="/login"
               className="btn btn-ghost normal-case text-xl overflow-hidden"
             >
               Se connecter
             </a>
-          </div>}
+          </div>
+        )}
       </div>
     </div>
   );
