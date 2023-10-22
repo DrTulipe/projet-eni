@@ -16,7 +16,6 @@ export function Formations() {
   }, [refreshCount]);
 
   const handleRefresh = () => {
-    // Nouvelle fonction
     setRefreshCount((prev) => prev + 1);
   };
 

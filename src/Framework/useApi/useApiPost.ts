@@ -1,6 +1,5 @@
 export async function ApiPost(url: string, datas?: any) {
   const token = localStorage.getItem("token");
-  console.log("ApiPost", token);
   try {
     const response = await fetch(url, {
       method: "POST",

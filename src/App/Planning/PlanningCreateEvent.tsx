@@ -1,76 +1,134 @@
 import React, { useEffect, useState } from "react";
 import { ApiPost } from "../../Framework/useApi/useApiPost";
-import { ApiGet } from "../../Framework/useApi/useApiGet";
-import { UtilisateurInterface } from "../Utilisateur/Compte";
 import { useUtilisateurSelect } from "../Utilisateur/utilisateurSelect";
+import { useModuleSelect } from "../Formations/useModuleSelect";
+import { usePromoSelect } from "../Promotion/usePromoSelect";
+import { useRoomSelect } from "../Salle/useRoomSelect";
 
 export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [selectedTrainer, setSelectedTrainer] = useState(""); // Formateur sélectionné
   const [endDate, setEndDate] = useState<Date | null>(null); // Date de fin
+  const [selectedTrainer, setSelectedTrainer] = useState(""); // Formateur sélectionné
+  const [selectedModule, setSelectedModule] = useState(""); // Formateur sélectionné
+  const [selectedClass, setSelectedClass] = useState(""); // Classe sélectionnée
+  const [selectedRoom, setSelectedRoom] = useState(""); // Salle sélectionnée
 
   const selectUserTab = useUtilisateurSelect();
+  const selectModuleTab = useModuleSelect();
+  const selectClassTab = usePromoSelect();
+  const selectRoomTab = useRoomSelect();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation basique
-    if (title.trim() === "") {
-      alert("Veuillez entrer un titre pour l'événement.");
+    if (
+      !endDate ||
+      !selectedTrainer ||
+      !selectedModule ||
+      !selectedClass ||
+      !selectedRoom
+    ) {
+      alert("Veuillez remplir tous les champs obligatoires.");
       return;
     }
 
     const eventData = {
-      title,
-      description,
-      // Ajoutez d'autres champs ici si nécessaire
+      moduleFormationId: selectedModule,
+      classeId: selectedClass,
+      salleId: selectedRoom,
+      utilisateurId: selectedTrainer,
+      dateDebut: selectedDate ? selectedDate.toISOString() : "",
+      dateFin: endDate.toISOString(),
     };
 
-    const { result, error } = await ApiPost("/api/add-events", eventData);
+    const { result, error } = await ApiPost("/api/sessions", eventData);
 
     if (error) {
       alert("Une erreur est survenue lors de l'ajout de l'événement.");
     } else {
-      console.log("Evénement ajouté avec succès :", result);
-      // Vous pouvez ajouter des actions supplémentaires ici, comme la mise à jour du calendrier ou la notification à l'utilisateur.
+      alert("Evénement ajouté avec succès!");
+      setSelectedModule("");
+      setSelectedClass("");
+      setSelectedRoom("");
+      setSelectedTrainer("");
+      setEndDate(null);
+
+      onClose();
     }
-
-    setTitle("");
-    setDescription("");
-
-    onClose();
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-2" htmlFor="event-title">
-          Titre de l'événement
+        <label className="block text-sm font-medium mb-2" htmlFor="module">
+          Module
         </label>
-        <input
-          type="text"
-          id="event-title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+        <select
+          id="module"
+          value={selectedModule}
+          onChange={(e) => setSelectedModule(e.target.value)}
           className="border p-2 w-full"
           required
-        />
-      </div>
-
-      <div className="mb-4">
-        <label
-          className="block text-sm font-medium mb-2"
-          htmlFor="event-description"
         >
-          Description (optionnelle)
+          <option value="-1">
+            {selectModuleTab.length <= 0
+              ? "Chargement des modules..."
+              : "Sélectionnez un module"}
+          </option>
+
+          {selectModuleTab.map((module) => (
+            <option key={module.id} value={module.id}>
+              {module.value}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2" htmlFor="class">
+          Classe
         </label>
-        <textarea
-          id="event-description"
-          rows={3}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+        <select
+          id="class"
+          value={selectedClass}
+          onChange={(e) => setSelectedClass(e.target.value)}
           className="border p-2 w-full"
-        ></textarea>
+          required
+        >
+          <option value="-1">
+            {selectClassTab.length <= 0
+              ? "Chargement des classes..."
+              : "Sélectionnez une classe"}
+          </option>
+
+          {selectClassTab.map((classe) => (
+            <option key={classe.id} value={classe.id}>
+              {classe.value}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2" htmlFor="room">
+          Salle
+        </label>
+        <select
+          id="room"
+          value={selectedRoom}
+          onChange={(e) => setSelectedRoom(e.target.value)}
+          className="border p-2 w-full"
+          required
+        >
+          <option value="-1">
+            {selectRoomTab.length <= 0
+              ? "Chargement des salles..."
+              : "Sélectionnez une salle"}
+          </option>
+
+          {selectRoomTab.map((room) => (
+            <option key={room.id} value={room.id}>
+              {room.value}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2" htmlFor="trainer">
@@ -83,7 +141,12 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
           className="border p-2 w-full"
           required
         >
-          <option value="-1">Sélectionnez un formateur</option>
+          <option value="-1">
+            {selectUserTab.length <= 0
+              ? "Chargement des utilisateurs..."
+              : "Sélectionnez un formateur"}
+          </option>
+
           {selectUserTab.map((user) => (
             <option key={user.id} value={user.id}>
               {user.value}
