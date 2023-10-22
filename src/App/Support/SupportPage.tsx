@@ -27,9 +27,7 @@ export function SupportPage() {
   const [showCreate, setShowCreate] = useState(false);
   useEffect(() => {
     const fetchTickets = async () => {
-      const result: TicketInterface[] = JSON.parse(
-        await ApiGet("/api/tickets")
-      );
+      const result: TicketInterface[] = await ApiGet("/api/tickets");
       setTickets(result);
     };
 
