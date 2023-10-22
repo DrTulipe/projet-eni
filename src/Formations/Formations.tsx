@@ -1,24 +1,38 @@
 import React, { useState, useEffect } from "react";
-
+interface FormationsListInterface {
+  id: number;
+  title: string;
+  campus: string;
+  classe: string;
+  salle: string;
+  dateDebut: Date;
+  dateFin: Date;
+  status: string;
+}
 export function Formations() {
-  const [formations, setFormations] = useState<any[]>([]);
+  const [formations, setFormations] = useState<FormationsListInterface[]>([]);
 
   useEffect(() => {
-    // Simulation d'un appel API
-    // Bien sûr, dans une application réelle, vous récupérerez ceci depuis un endpoint.
+    // todo : récupérer les données via un appel api
     setFormations([
       {
         id: 1,
-        title: "Problème de connexion",
+        title: "Formation Agile",
         campus: "Rennes",
         classe: "HMS2D_012A",
+        salle: "F1",
+        dateDebut: new Date,
+        dateFin: new Date,
         status: "En attente",
       },
       {
         id: 2,
-        title: "Bug affichage",
+        title: "Formation iso 9001",
         campus: "Nantes",
         classe: "HMS2D_012B",
+        salle: "F2",
+        dateDebut: new Date,
+        dateFin: new Date,
         status: "Accepté",
       },
     ]);
@@ -43,7 +57,10 @@ export function Formations() {
             <th>Titre</th>
             <th>Campus</th>
             <th>Classe</th>
+            <th>Salle</th>
             <th>Statut</th>
+            <th>Date Début</th>
+            <th>Date Fin</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -53,7 +70,10 @@ export function Formations() {
               <td>{formation.title}</td>
               <td>{formation.campus}</td>
               <td>{formation.classe}</td>
+              <td>{formation.salle}</td>
               <td>{formation.status}</td>
+              <td>{formation.dateDebut.toString()}</td>
+              <td>{formation.dateFin.toString()}</td>
               {/* //todo : masquer les boutons si le statut est déjà renseigné */}
               <td>
                 <button

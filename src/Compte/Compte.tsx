@@ -1,76 +1,79 @@
 import { useEffect, useState } from "react";
+import { ApiGet } from "../Framework/useApi/useApiGet";
+import { ApiPost } from "../Framework/useApi/useApiPost";
+
+export interface UtilisateurInterface {
+  id?: number;
+  etablissement_id?: number;
+  email: string;
+  nom: string;
+  prenom: string;
+  roles: any[];
+  password: string;
+}
 
 export function Compte() {
-  const [user, setUser] = useState(null);
-  const [formData, setFormData] = useState({
+  const [user, setUser] = useState<UtilisateurInterface | undefined>(undefined);
+  const [formData, setFormData] = useState<UtilisateurInterface>({
+    etablissement_id: 0,
+    email: "",
     nom: "",
     prenom: "",
-    email: "",
+    roles: [],
     password: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    // Récupérer le jeton d'authentification depuis le stockage local
-    const token = localStorage.getItem("token");
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      const response = await ApiGet("https://127.0.0.1:8000/api/user?id_user=");
+      if (response.result) {
+        const data = response.result;
+        setUser(data);
 
-    // Vérifier si l'utilisateur est authentifié en fonction du jeton
-    if (token) {
-      // Envoyer une requête au backend pour récupérer les informations de l'utilisateur
-      fetch("/api/user", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error("Erreur lors de la récupération des informations de l'utilisateur");
-          }
-        })
-        .then((data) => {
-          // Mettre à jour l'état de l'utilisateur avec les données reçues
-          setUser(data);
-          // Pré-remplir le formulaire avec les données de l'utilisateur
-          setFormData({
-            nom: data.nom,
-            prenom: data.prenom,
-            email: data.email,
-            password: "", // Ne pas inclure le mot de passe par sécurité
-          });
-        })
-        .catch((error) => {
-          console.error("Erreur lors de la récupération des informations de l'utilisateur :", error);
+        setFormData({
+          etablissement_id: data.etablissement_id,
+          email: data.email,
+          nom: data.nom,
+          prenom: data.prenom,
+          roles: data.roles,
+          password: data.password,
         });
-    }
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const handleInputChange = (e: { target: { name: any; value: any; }; }) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [name]: value,
-    });
+    }));
   };
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    // Envoyer une requête au backend pour mettre à jour les informations de l'utilisateur
-    // Vous devrez implémenter cette partie en fonction de votre backend
+    // todo envoi des données
+    ApiPost("https://127.0.0.1:8000/api/user", {
+      formData,
+    });
     console.log("Données du formulaire soumises :", formData);
   };
 
-  if (!user) {
-    // Afficher un message de chargement ou de connexion
-    return <div>Chargement en cours...</div>;
-  }
+  // if (!user) {
+  //   // Afficher un message de chargement ou de connexion
+  //   return <div>Chargement en cours...</div>;
+  // }
 
   return (
     <div className="max-w-md mx-auto p-6 space-y-4">
@@ -78,42 +81,50 @@ export function Compte() {
         <h2 className="text-2xl font-semibold">Mon Compte</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Nom :</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Nom :
+            </label>
             <input
               type="text"
               name="nom"
-              value={formData.nom}
+              value={formData?.nom}
               onChange={handleInputChange}
               className="input input-bordered w-full"
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Prénom :</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Prénom :
+            </label>
             <input
               type="text"
               name="prenom"
-              value={formData.prenom}
+              value={formData?.prenom}
               onChange={handleInputChange}
               className="input input-bordered w-full"
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Email :</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Email :
+            </label>
             <input
               type="email"
               name="email"
-              value={formData.email}
+              value={formData?.email}
               onChange={handleInputChange}
               className="input input-bordered w-full"
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Mot de passe :</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Mot de passe :
+            </label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                value={formData.password}
+                value={formData?.password}
                 onChange={handleInputChange}
                 className="input input-bordered w-full pr-10"
               />
