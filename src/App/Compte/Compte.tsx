@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { ApiGet } from "../Framework/useApi/useApiGet";
-import { ApiPost } from "../Framework/useApi/useApiPost";
+import { ApiGet } from "../../Framework/useApi/useApiGet";
+import { ApiPost } from "../../Framework/useApi/useApiPost";
 
 export interface UtilisateurInterface {
   id?: number;
@@ -28,7 +28,7 @@ export function Compte() {
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
-      const response = await ApiGet("https://127.0.0.1:8000/api/user?id_user=");
+      const response = await ApiGet("/api/user?id_user=");
       if (response.result) {
         const data = response.result;
         setUser(data);
@@ -64,7 +64,7 @@ export function Compte() {
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     // todo envoi des données
-    ApiPost("https://127.0.0.1:8000/api/user", {
+    ApiPost("/api/user", {
       formData,
     });
     console.log("Données du formulaire soumises :", formData);

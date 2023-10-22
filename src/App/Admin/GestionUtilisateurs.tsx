@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { ApiGet } from "../Framework/useApi/useApiGet";
-import { ApiPost } from "../Framework/useApi/useApiPost";
+import { ApiGet } from "../../Framework/useApi/useApiGet";
+import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { UtilisateurInterface } from "../Compte/Compte";
 
 export async function fetchFormateurs() {
   const { result, error } = await ApiGet(
-    "https://127.0.0.1:8000/api/utilisateur"
+    "/api/utilisateur"
   );
 
   if (error) {
@@ -18,7 +18,7 @@ export async function fetchFormateurs() {
 
 export async function createFormateur(data: any) {
   const { result, error } = await ApiPost(
-    "https://127.0.0.1:8000/api/utilisateur/create",
+    "/api/utilisateur/create",
     data
   );
 
@@ -32,7 +32,7 @@ export async function createFormateur(data: any) {
 
 export async function editFormateur(data: any) {
   const { result, error } = await ApiPost(
-    "https://127.0.0.1:8000/api/utilisateur/edit",
+    "/api/utilisateur/edit",
     data
   );
 
@@ -79,7 +79,7 @@ export function CreateUtilisateurModal(props: {
                 e.preventDefault();
                 // todo soumission du form
                 const response = await ApiPost(
-                  "https://127.0.0.1:8000/api/campus",
+                  "/api/campus",
                   formData
                 );
                 if (response) {
@@ -176,7 +176,7 @@ export function CreateUtilisateurModal(props: {
               }}
               className="btn btn-primary"
             >
-              Modifier
+              Enregistrer
             </button>
           </div>
         </div>
@@ -225,7 +225,7 @@ export function EditUtilisateurModal(props: {
                 e.preventDefault();
                 // todo soumission du form
                 const response = await ApiPost(
-                  "https://127.0.0.1:8000/api/campus",
+                  "/api/campus",
                   formData
                 );
                 if (response) {
@@ -320,7 +320,7 @@ export function EditUtilisateurModal(props: {
               onClick={() => {}}
               className="btn btn-primary"
             >
-              Modifier
+              Enregistrer
             </button>
           </div>
         </div>

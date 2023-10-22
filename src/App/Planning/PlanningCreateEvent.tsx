@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { ApiPost } from "../Framework/useApi/useApiPost";
-import { ApiGet } from "../Framework/useApi/useApiGet";
+import { ApiPost } from "../../Framework/useApi/useApiPost";
+import { ApiGet } from "../../Framework/useApi/useApiGet";
 
 export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
   const [title, setTitle] = useState("");
@@ -12,7 +12,7 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
   useEffect(() => {
     async function fetchTrainers() {
       // Remplacez cette URL par celle de votre API qui retourne la liste des formateurs
-      const formateursApiUrl = "https://127.0.0.1:8000/api/formateurs";
+      const formateursApiUrl = "/api/formateurs";
       const { result, error } = await ApiGet(formateursApiUrl);
       console.log("fetchTrainers", result, error);
       if (error || (result && result.status !== 200)) {
@@ -35,7 +35,7 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
     }
 
     // Définissez l'URL de votre API pour ajouter un événement
-    const apiUrl = "https://127.0.0.1:8000/api/add-events";
+    const apiUrl = "/api/add-events";
 
     // Données à envoyer à l'API
     const eventData = {

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ApiPost } from "../Framework/useApi/useApiPost";
-import { InputForwarded } from "../Framework/Input/InputRef";
+import { ApiPost } from "../../Framework/useApi/useApiPost";
+import { InputForwarded } from "../../Framework/Input/InputRef";
 
 export function LoginPage() {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -40,7 +40,7 @@ export function LoginPage() {
     const emailValue = emailRef.current.value;
     const passwordValue = passwordRef.current.value;
 
-    const response = await ApiPost("https://127.0.0.1:8000/api/login_check", {
+    const response = await ApiPost("/api/login_check", {
       email: emailValue,
       password: passwordValue,
     });
@@ -91,8 +91,7 @@ export function useCheckConnection() {
     const checkConnection = async () => {
       try {
         const { error, result } = await ApiPost(
-          "https://127.0.0.1:8000/api/token/validate",
-          {}
+          "/api/token/validate"
         );
 
         if (

@@ -1,5 +1,5 @@
-import { ApiGet } from "../Framework/useApi/useApiGet";
-import { ApiPost } from "../Framework/useApi/useApiPost";
+import { ApiGet } from "../../Framework/useApi/useApiGet";
+import { ApiPost } from "../../Framework/useApi/useApiPost";
 
 export async function fetchAbonnements() {
   const { result, error } = await ApiGet(

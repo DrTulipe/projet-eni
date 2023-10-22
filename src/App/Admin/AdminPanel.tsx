@@ -5,6 +5,7 @@ import {
   CampusInterface,
   EditCampusModal,
   CreateCampusModal,
+  CampusListCard,
 } from "./GestionCampus";
 import { fetchClasses, createClass } from "./GestionClasses";
 import {
@@ -14,11 +15,11 @@ import {
   EditUtilisateurModal,
 } from "./GestionUtilisateurs";
 import "./admin.css";
-import Button from "../Framework/Button";
+import Button from "../../Framework/Button";
 import essentielle from "./essentielle.png";
 import avancee from "./avancee.png";
 import premium from "./premium.png";
-import { ApiPost } from "../Framework/useApi/useApiPost";
+import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { UtilisateurInterface } from "../Compte/Compte";
 
 export function AdminPanel() {
@@ -26,59 +27,38 @@ export function AdminPanel() {
     UtilisateurInterface[]
   >([]);
   const [classes, setClasses] = useState<any[]>([]);
-  const [campusList, setCampus] = useState<CampusInterface[]>([]);
-  const [showModalCreateCampus, setShowModalCreateCampus] =
-    useState<boolean>(false);
+
   const [showModalCreateUtilisateur, setShowModalCreateUtilisateur] =
     useState<boolean>(false);
   const [showModalClasse, setShowModalClasse] = useState<boolean>(false);
 
-  const [campusName, setCampusName] = useState<string>("");
   const [formateurName, setFormateurName] = useState<string>("");
   const [classeName, setClasseName] = useState<string>("");
 
-  // Fonctions pour ouvrir et fermer la modale de création d'un campus
-  const openModalCreateCampus = () => setShowModalCreateCampus(true);
-  const closeModalCreateCampus = () => setShowModalCreateCampus(false);
-  const openModalCreateClasse = () => setShowModalClasse(true);
-  const closeModalCreateClasse = () => setShowModalClasse(false);
-
-  const handleAddCampus = async () => {
-    if (campusName.trim() === "") {
-      alert("Veuillez saisir un nom de campus.");
-      return;
-    }
-
-    await handleSubmitCampus({ name: campusName });
-  };
-
   const handleAddFormateur = async () => {
-    if (campusName.trim() === "") {
+    if (formateurName.trim() === "") {
       alert("Veuillez saisir un nom de formateur.");
       return;
     }
 
-    await handleSubmitFormateur({ name: campusName });
+    await handleSubmitFormateur({ name: formateurName });
   };
 
   const handleAddClasse = async () => {
-    if (campusName.trim() === "") {
+    if (classeName.trim() === "") {
       alert("Veuillez saisir un nom de classe.");
       return;
     }
 
-    await handleSubmitClasse({ name: campusName });
+    await handleSubmitClasse({ name: classeName });
   };
 
   useEffect(() => {
     async function loadData() {
       const loadedFormateurs = await fetchFormateurs();
       const loadedClasses = await fetchClasses();
-      const loadedCampus: CampusInterface[] = await fetchCampus();
-
-      setUtilisateurList(loadedFormateurs);
-      setClasses(loadedClasses);
-      setCampus(loadedCampus);
+      // setUtilisateurList(loadedFormateurs);
+      // setClasses(loadedClasses);
     }
 
     loadData();
@@ -94,25 +74,14 @@ export function AdminPanel() {
     setClasses((prev) => [...prev, newClass]);
   };
 
-  const handleSubmitCampus = async (data: any) => {
-    const newCampus = await createCampus(data);
-    if (!newCampus) {
-      alert("Un erreur est survenue lors de la création");
-      return;
-    }
-    setCampus((prev) => [...prev, newCampus]);
-    closeModalCreateCampus();
-    setCampusName("");
-  };
-
   const [utilisateurSelected, setUtilisateurSelected] = useState<
     UtilisateurInterface | undefined
   >(undefined);
-  const [isModalUtilisateurOpen, setIsModalUtilisateurOpen] = useState<boolean>(false);
+  const [isModalUtilisateurOpen, setIsModalUtilisateurOpen] =
+    useState<boolean>(false);
 
   const handleModifierUtilisateur = (utilisateur: UtilisateurInterface) => {
     if (!utilisateur) return;
-    setCampus(campusList.filter((user) => user.id !== utilisateur.id));
     setUtilisateurSelected(utilisateur);
     setIsModalUtilisateurOpen(true);
   };
@@ -124,7 +93,7 @@ export function AdminPanel() {
     setUtilisateurList(
       utilisateurList.filter((formateur) => formateur.id !== id)
     );
-    ApiPost("https://127.0.0.1:8000/api/utilisateur/delete", campusSelected);
+    ApiPost("/api/utilisateur/delete", id);
     // todo appel api pour supprimer l'utilisateur
   };
 
@@ -138,26 +107,8 @@ export function AdminPanel() {
     // todo appel api pour supprimer la classe
   };
 
-  const [campusSelected, setCampusSelected] = useState<
-    CampusInterface | undefined
-  >(undefined);
-  const [isModalCampusOpen, setIsModalCampusOpen] = useState(false);
-
-  const handleModifierCampus = (campusSelected: CampusInterface) => {
-    if (!campusSelected) return;
-    setCampus(campusList.filter((campus) => campus.id !== campusSelected.id));
-    setCampusSelected(campusSelected);
-    setIsModalCampusOpen(true);
-  };
-
-  const handleSupprimerCampus = (campusSelected: CampusInterface) => {
-    if (!campusSelected) return;
-    if (!window.confirm("êtes vous sur de vouloir supprimer ce campus ?"))
-      return;
-    setCampus(campusList.filter((campus) => campus.id !== campusSelected.id));
-    // todo appel api pour supprimer le campus
-    ApiPost("https://127.0.0.1:8000/api/campus/delete", campusSelected);
-  };
+  const openModalCreateClasse = () => setShowModalClasse(true);
+  const closeModalCreateClasse = () => setShowModalClasse(false);
 
   return (
     <div>
@@ -195,7 +146,7 @@ export function AdminPanel() {
                           className="btn btn-outline btn-accent"
                           onClick={() => handleModifierUtilisateur(utilisateur)}
                         >
-                          Modifier
+                          Enregistrer
                         </button>
                         <button
                           className="btn btn-outline btn-error"
@@ -242,7 +193,7 @@ export function AdminPanel() {
                           className="btn btn-outline btn-accent"
                           onClick={() => handleModifierClasse(classe.id)}
                         >
-                          Modifier
+                          Enregistrer
                         </button>
                         <button
                           className="btn btn-outline btn-error"
@@ -258,51 +209,7 @@ export function AdminPanel() {
             </div>
           </div>
 
-          <div className="card">
-            <div className="card-header">
-              <h2>Gestion des Campus</h2>
-              <Button
-                onClick={() => {
-                  openModalCreateCampus();
-                }}
-              >
-                Ajouter un campus
-              </Button>
-            </div>
-            <div className="card-content">
-              <table className="table w-full">
-                <thead>
-                  <tr>
-                    <th>Nom</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {campusList.map((campus) => (
-                    <div key={campus.id}>
-                      <tr key={campus.id}>
-                        <td>{campus.libelle}</td>
-                        <td>
-                          <button
-                            className="btn btn-outline btn-accent"
-                            onClick={() => handleModifierCampus(campus)}
-                          >
-                            Modifier
-                          </button>
-                          <button
-                            className="btn btn-outline btn-error"
-                            onClick={() => handleSupprimerCampus(campus)}
-                          >
-                            Supprimer
-                          </button>
-                        </td>
-                      </tr>
-                    </div>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <CampusListCard />
           <div className="card">
             <div className="card-header">
               <h2>Gestion des Abonnements</h2>
@@ -330,17 +237,6 @@ export function AdminPanel() {
         </div>
       </div>
 
-      {campusSelected && (
-        <EditCampusModal
-          isModalCampusOpen={isModalCampusOpen}
-          setIsModalCampusOpen={setIsModalCampusOpen}
-          campusSelected={campusSelected}
-        />
-      )}
-      <CreateCampusModal
-        showModalCreateCampus={showModalCreateCampus}
-        setShowModalCreateCampus={setShowModalCreateCampus}
-      />
       {utilisateurSelected && (
         <EditUtilisateurModal
           isModalUtilisateurOpen={isModalUtilisateurOpen}
@@ -367,7 +263,7 @@ export function AdminPanel() {
                 <input
                   type="text"
                   id="formateur-name"
-                  value={campusName}
+                  value={formateurName}
                   onChange={(e) => setClasseName(e.target.value)}
                   className="border p-2 w-full"
                   required

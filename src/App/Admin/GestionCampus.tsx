@@ -1,33 +1,26 @@
-import { useState } from "react";
-import { ApiGet } from "../Framework/useApi/useApiGet";
-import { ApiPost } from "../Framework/useApi/useApiPost";
+import { useEffect, useState } from "react";
+import { ApiGet } from "../../Framework/useApi/useApiGet";
+import { ApiPost } from "../../Framework/useApi/useApiPost";
+import Button from "../../Framework/Button";
+import "./widgetTab.css";
 
 export interface CampusInterface {
   id?: number;
   libelle: string;
-  num_voie: string;
+  numVoie: string;
   rue: string;
   ville: string;
-  code_postal: number;
-  numero_tel: number;
+  codePostal: number;
+  numeroTel: number;
 }
 
 export async function fetchCampus() {
-  const { result, error } = await ApiGet("https://127.0.0.1:8000/api/campus");
-
-  if (error) {
-    console.error("Erreur lors de la récupération des campus:", error);
-    return [];
-  }
-
+  const result = await ApiGet("/api/etablissements");
   return result;
 }
 
 export async function createCampus(data: CampusInterface) {
-  const { result, error } = await ApiPost(
-    "https://127.0.0.1:8000/api/campus",
-    data
-  );
+  const { result, error } = await ApiPost("/api/campus", data);
 
   if (error) {
     console.error("Erreur lors de la création du campus:", error);
@@ -62,7 +55,7 @@ export function EditCampusModal(props: {
               onSubmit={(e) => {
                 e.preventDefault();
                 // todo soumission du form
-                ApiPost("https://127.0.0.1:8000/api/campus", formData);
+                ApiPost("/api/campus", formData);
               }}
             >
               <div className="mb-4">
@@ -84,7 +77,7 @@ export function EditCampusModal(props: {
                 <input
                   type="text"
                   name="num_voie"
-                  value={formData.num_voie}
+                  value={formData.numVoie}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
@@ -120,7 +113,7 @@ export function EditCampusModal(props: {
                 <input
                   type="number"
                   name="code_postal"
-                  value={formData.code_postal}
+                  value={formData.codePostal}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
@@ -132,7 +125,7 @@ export function EditCampusModal(props: {
                 <input
                   type="number"
                   name="numero_tel"
-                  value={formData.numero_tel}
+                  value={formData.numeroTel}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
@@ -150,7 +143,7 @@ export function EditCampusModal(props: {
               }}
               className="btn btn-primary"
             >
-              Modifier
+              Enregistrer
             </button>
           </div>
         </div>
@@ -167,11 +160,11 @@ export function CreateCampusModal(props: {
 
   const [formData, setFormData] = useState<CampusInterface>({
     libelle: "",
-    num_voie: "",
+    numVoie: "",
     rue: "",
     ville: "",
-    code_postal: 0,
-    numero_tel: 0,
+    codePostal: 0,
+    numeroTel: 0,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,10 +183,7 @@ export function CreateCampusModal(props: {
               onSubmit={async (e) => {
                 e.preventDefault();
                 // todo soumission du form
-                const response = await ApiPost(
-                  "https://127.0.0.1:8000/api/campus",
-                  formData
-                );
+                const response = await ApiPost("/api/campus", formData);
                 if (response) {
                   setShowModalCreateCampus(false);
                 }
@@ -218,7 +208,7 @@ export function CreateCampusModal(props: {
                 <input
                   type="text"
                   name="num_voie"
-                  value={formData.num_voie}
+                  value={formData.numVoie}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
@@ -254,7 +244,7 @@ export function CreateCampusModal(props: {
                 <input
                   type="number"
                   name="code_postal"
-                  value={formData.code_postal}
+                  value={formData.codePostal}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
@@ -266,7 +256,7 @@ export function CreateCampusModal(props: {
                 <input
                   type="number"
                   name="numero_tel"
-                  value={formData.numero_tel}
+                  value={formData.numeroTel}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
@@ -292,6 +282,123 @@ export function CreateCampusModal(props: {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function CampusListCard() {
+  // * States
+  const openModalCreateCampus = () => setShowModalCreateCampus(true);
+  const [campusList, setCampus] = useState<CampusInterface[]>([]);
+  const [showModalCreateCampus, setShowModalCreateCampus] =
+    useState<boolean>(false);
+  const [campusSelected, setCampusSelected] = useState<
+    CampusInterface | undefined
+  >(undefined);
+  const [isModalCampusOpen, setIsModalCampusOpen] = useState(false);
+  const [campusName, setCampusName] = useState<string>("");
+
+  useEffect(() => {
+    async function loadData() {
+      const loadedCampus: CampusInterface[] = await fetchCampus();
+      setCampus(loadedCampus);
+    }
+    loadData();
+  }, []);
+
+  // * Fonctions
+  const handleModifierCampus = (campusSelected: CampusInterface) => {
+    if (!campusSelected) return;
+    setCampus(campusList.filter((campus) => campus.id !== campusSelected.id));
+    setCampusSelected(campusSelected);
+    setIsModalCampusOpen(true);
+  };
+  const closeModalCreateCampus = () => setShowModalCreateCampus(false);
+
+  const handleSubmitCampus = async (data: any) => {
+    const newCampus = await createCampus(data);
+    if (!newCampus) {
+      alert("Un erreur est survenue lors de la création");
+      return;
+    }
+    setCampus((prev) => [...prev, newCampus]);
+    closeModalCreateCampus();
+    setCampusName("");
+  };
+
+  const handleAddCampus = async () => {
+    if (campusName.trim() === "") {
+      alert("Veuillez saisir un nom de campus.");
+      return;
+    }
+
+    await handleSubmitCampus({ name: campusName });
+  };
+  const handleSupprimerCampus = (campusSelected: CampusInterface) => {
+    if (!campusSelected) return;
+    if (!window.confirm("êtes vous sur de vouloir supprimer ce campus ?"))
+      return;
+    setCampus(campusList.filter((campus) => campus.id !== campusSelected.id));
+    // todo appel api pour supprimer le campus
+    ApiPost("/api/campus/delete", campusSelected);
+  };
+
+  return (
+    <div className="card">
+      <div className="card-header">
+        <h2>Gestion des Campus</h2>
+        <Button
+          onClick={() => {
+            openModalCreateCampus();
+          }}
+        >
+          Ajouter un campus
+        </Button>
+      </div>
+      <div className="card-content">
+        <table className="table w-full table-scrollable">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Ville</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {campusList.map((campus) => (
+              <tr key={campus.id}>
+                <td>{campus.libelle}</td>
+                <td>{campus.ville}</td>
+                <td>
+                  <button
+                    className="btn btn-outline btn-accent"
+                    onClick={() => handleModifierCampus(campus)}
+                  >
+                    Enregistrer
+                  </button>
+                  <button
+                    className="btn btn-outline btn-error"
+                    onClick={() => handleSupprimerCampus(campus)}
+                  >
+                    Supprimer
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <CreateCampusModal
+        showModalCreateCampus={showModalCreateCampus}
+        setShowModalCreateCampus={setShowModalCreateCampus}
+      />
+      {campusSelected && (
+        <EditCampusModal
+          isModalCampusOpen={isModalCampusOpen}
+          setIsModalCampusOpen={setIsModalCampusOpen}
+          campusSelected={campusSelected}
+        />
+      )}
     </div>
   );
 }

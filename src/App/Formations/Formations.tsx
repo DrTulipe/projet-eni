@@ -9,6 +9,7 @@ interface FormationsListInterface {
   dateFin: Date;
   status: string;
 }
+
 export function Formations() {
   const [formations, setFormations] = useState<FormationsListInterface[]>([]);
 
@@ -21,8 +22,8 @@ export function Formations() {
         campus: "Rennes",
         classe: "HMS2D_012A",
         salle: "F1",
-        dateDebut: new Date,
-        dateFin: new Date,
+        dateDebut: new Date(),
+        dateFin: new Date(),
         status: "En attente",
       },
       {
@@ -31,8 +32,8 @@ export function Formations() {
         campus: "Nantes",
         classe: "HMS2D_012B",
         salle: "F2",
-        dateDebut: new Date,
-        dateFin: new Date,
+        dateDebut: new Date(),
+        dateFin: new Date(),
         status: "Accepté",
       },
     ]);

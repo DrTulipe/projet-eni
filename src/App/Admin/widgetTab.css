@@ -1,0 +1,48 @@
+/* CSS */
+.table-scroll {
+  max-height: 300px; /* Ou la hauteur que vous désirez */
+  overflow-y: auto;
+  display: block;
+}
+
+table {
+  width: 80%;
+}
+
+thead,
+tbody {
+  display: block;
+}
+
+thead {
+  width: calc(
+    100% - 17px
+  ); /* Pour compenser la largeur de la barre de défilement */
+}
+
+tbody {
+  width: 100%;
+}
+
+tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table-scrollable tbody {
+  max-height: 250px; /* Choisissez la hauteur souhaitée */
+  overflow-y: auto;
+  display: block;
+}
+
+.table-scrollable thead,
+.table-scrollable tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* Même largeur pour les colonnes */
+}
+
+.table-scrollable thead {
+  width: calc(100% - 1em); /* Tenir compte de la largeur du scroll */
+}

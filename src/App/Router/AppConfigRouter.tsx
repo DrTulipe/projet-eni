@@ -1,5 +1,4 @@
 import { LoginPage, useCheckConnection } from "../Login/LoginPage";
-import { TestPage } from "../TestPage";
 import React from "react";
 
 import {
@@ -8,7 +7,7 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import { Navbar } from "../Framework/Navbar/NavBar";
+import { Navbar } from "../../Framework/Navbar/NavBar";
 import { LandingPage } from "../LandingPage/LandingPage";
 import { Planning } from "../Planning/Planning";
 import { Compte } from "../Compte/Compte";
