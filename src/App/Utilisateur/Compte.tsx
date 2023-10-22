@@ -78,7 +78,6 @@ export function Compte() {
       email: formData.email,
       nom: formData.nom,
       prenom: formData.prenom,
-      roles: formData.roles,
       password: formData.password,
       passwordNew: formData.passwordNew,
     });
