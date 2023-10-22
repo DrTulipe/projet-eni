@@ -1,43 +1,24 @@
 import React, { useState, useEffect } from "react";
-interface FormationsListInterface {
-  id: number;
-  title: string;
-  campus: string;
-  classe: string;
-  salle: string;
-  dateDebut: Date;
-  dateFin: Date;
-  status: string;
-}
+import { EvenementInterface } from "../Planning/Planning";
+import { ApiGet } from "../../Framework/useApi/useApiGet";
 
 export function Formations() {
-  const [formations, setFormations] = useState<FormationsListInterface[]>([]);
+  const [formations, setFormations] = useState<EvenementInterface[]>([]);
+  const [refreshCount, setRefreshCount] = useState(0);
 
   useEffect(() => {
-    // todo : récupérer les données via un appel api
-    setFormations([
-      {
-        id: 1,
-        title: "Formation Agile",
-        campus: "Rennes",
-        classe: "HMS2D_012A",
-        salle: "F1",
-        dateDebut: new Date(),
-        dateFin: new Date(),
-        status: "En attente",
-      },
-      {
-        id: 2,
-        title: "Formation iso 9001",
-        campus: "Nantes",
-        classe: "HMS2D_012B",
-        salle: "F2",
-        dateDebut: new Date(),
-        dateFin: new Date(),
-        status: "Accepté",
-      },
-    ]);
-  }, []);
+    const fetchEvents = async () => {
+      const result = await ApiGet("/api/sessions");
+      if(result === "ERROR") return;
+      setFormations(result);
+    };
+    fetchEvents();
+  }, [refreshCount]);
+
+  const handleRefresh = () => {
+    // Nouvelle fonction
+    setRefreshCount((prev) => prev + 1);
+  };
 
   const handleRefuserFormation = (id: number) => {
     setFormations(formations.filter((formation) => formation.id !== id));
@@ -51,45 +32,51 @@ export function Formations() {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl mb-4">Mes formations</h1>
+      <h1 className="text-2xl mb-4">
+        Mes formations &nbsp;&nbsp;&nbsp;&nbsp;
+        <button onClick={handleRefresh} className="btn btn-outline mb-4">
+          Rafraîchir
+        </button>
+      </h1>
       <table className="table w-full">
         <thead>
           <tr>
-            <th>Titre</th>
-            <th>Campus</th>
+            <th>Libellé</th>
+            <th>Formateur</th>
             <th>Classe</th>
             <th>Salle</th>
-            <th>Statut</th>
             <th>Date Début</th>
             <th>Date Fin</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {formations.map((formation) => (
+          {formations && formations.map((formation) => (
             <tr key={formation.id}>
-              <td>{formation.title}</td>
-              <td>{formation.campus}</td>
-              <td>{formation.classe}</td>
-              <td>{formation.salle}</td>
-              <td>{formation.status}</td>
+              <td>{formation.moduleFormation.libelle}</td>
+              <td>{formation.utilisateur.nom + " " + formation.utilisateur.prenom}</td>
+              <td>{formation.classe.libelle}</td>
+              <td>{formation.salle.libelle}</td>
               <td>{formation.dateDebut.toString()}</td>
               <td>{formation.dateFin.toString()}</td>
               {/* //todo : masquer les boutons si le statut est déjà renseigné */}
-              <td>
-                <button
-                  className="btn btn-outline btn-accent"
-                  onClick={() => handleAccepterFormation(formation.id)}
-                >
-                  Accepter
-                </button>
-                <button
-                  className="btn btn-outline btn-error"
-                  onClick={() => handleRefuserFormation(formation.id)}
-                >
-                  Refuser
-                </button>
-              </td>
+              {/* {formation.statut.id === 6 && ( */}
+              { (
+                <td>
+                  <button
+                    className="btn btn-outline btn-accent"
+                    onClick={() => handleAccepterFormation(formation.id)}
+                  >
+                    Accepter
+                  </button>
+                  <button
+                    className="btn btn-outline btn-error"
+                    onClick={() => handleRefuserFormation(formation.id)}
+                  >
+                    Refuser
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

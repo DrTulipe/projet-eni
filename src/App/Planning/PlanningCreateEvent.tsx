@@ -1,30 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { ApiGet } from "../../Framework/useApi/useApiGet";
+import { UtilisateurInterface } from "../Utilisateur/Compte";
+import { useUtilisateurSelect } from "../Utilisateur/utilisateurSelect";
 
 export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [trainers, setTrainers] = useState([]); // Liste des formateurs
   const [selectedTrainer, setSelectedTrainer] = useState(""); // Formateur sélectionné
   const [endDate, setEndDate] = useState<Date | null>(null); // Date de fin
 
-  useEffect(() => {
-    async function fetchTrainers() {
-      // Remplacez cette URL par celle de votre API qui retourne la liste des formateurs
-      const formateursApiUrl = "/api/formateurs";
-      const { result, error } = await ApiGet(formateursApiUrl);
-      console.log("fetchTrainers", result, error);
-      if (error || (result && result.status !== 200)) {
-        console.error("Erreur lors de la récupération des formateurs:", error);
-      } else {
-        setTrainers(result);
-      }
-    }
-
-    fetchTrainers();
-  }, []);
-
+  const selectUserTab = useUtilisateurSelect();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -34,17 +20,13 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
       return;
     }
 
-    // Définissez l'URL de votre API pour ajouter un événement
-    const apiUrl = "/api/add-events";
-
-    // Données à envoyer à l'API
     const eventData = {
       title,
       description,
       // Ajoutez d'autres champs ici si nécessaire
     };
 
-    const { result, error } = await ApiPost(apiUrl, eventData);
+    const { result, error } = await ApiPost("/api/add-events", eventData);
 
     if (error) {
       alert("Une erreur est survenue lors de l'ajout de l'événement.");
@@ -101,10 +83,10 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
           className="border p-2 w-full"
           required
         >
-          <option value="">Sélectionnez un formateur</option>
-          {trainers.map((trainer: any) => (
-            <option key={trainer.id} value={trainer.id}>
-              {trainer.name}
+          <option value="-1">Sélectionnez un formateur</option>
+          {selectUserTab.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.value}
             </option>
           ))}
         </select>

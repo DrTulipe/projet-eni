@@ -5,6 +5,7 @@ import { ApiPost } from "../../Framework/useApi/useApiPost";
 export interface UtilisateurInterface {
   id?: number;
   etablissement_id?: number;
+  etablissement?: { id: number; libelle: string };
   email: string;
   nom: string;
   prenom: string;
@@ -69,11 +70,6 @@ export function Compte() {
     });
     console.log("Données du formulaire soumises :", formData);
   };
-
-  // if (!user) {
-  //   // Afficher un message de chargement ou de connexion
-  //   return <div>Chargement en cours...</div>;
-  // }
 
   return (
     <div className="max-w-md mx-auto p-6 space-y-4">

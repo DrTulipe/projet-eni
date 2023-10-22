@@ -50,3 +50,8 @@
 .subscribe-btn:hover {
   background-color: #0056b3;
 }
+
+.action-column {
+  text-align: center;
+  width: 100px;
+}

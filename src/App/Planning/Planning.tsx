@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -7,6 +7,18 @@ import frLocale from "@fullcalendar/core/locales/fr";
 import { Container } from "../../Framework/Container/Container";
 import { FilterToolBarPlanning } from "./FilterToolBarPlanning";
 import { PlanningCreateEvent } from "./PlanningCreateEvent";
+import { ApiGet } from "../../Framework/useApi/useApiGet";
+
+export interface EvenementInterface {
+  id: number;
+  moduleFormation: { id: number; libelle: string };
+  utilisateur: { id: number; nom: string, prenom: string };
+  classe: { id: number; libelle: string };
+  salle: { id: number; libelle: string };
+  dateDebut: Date;
+  dateFin: Date;
+  statut: { id: number; libelle: string };
+}
 
 export function Planning() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -22,6 +34,17 @@ export function Planning() {
     setSelectedDate(null);
   };
 
+  const [events, setEvents] = useState<any[]>([]); // Nouvel état pour stocker les événements
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const result: EvenementInterface[] = await ApiGet("/api/sessions");
+      const eventsForFullCalendar = convertToFullCalendarEvents(result);
+      setEvents(eventsForFullCalendar);
+    };
+    fetchEvents();
+  }, []);
+
   return (
     <Container>
       <div className="w-full">
@@ -31,6 +54,7 @@ export function Planning() {
           initialView="dayGridMonth"
           themeSystem="standard"
           locale={frLocale}
+          events={events}
           eventColor="#378006"
           dateClick={handleDateClick}
           headerToolbar={{
@@ -64,4 +88,20 @@ export function Planning() {
       </div>
     </Container>
   );
+}
+
+function convertToFullCalendarEvents(data: EvenementInterface[]): any[] {
+  if (!data) return [];
+  return data.map((event) => ({
+    id: event.id,
+    title: event.moduleFormation.libelle,
+    start: new Date(event.dateDebut),
+    end: new Date(event.dateFin),
+    extendedProps: {
+      moduleFormation: event.moduleFormation,
+      utilisateur: event.utilisateur,
+      classe: event.classe,
+      salle: event.salle,
+    },
+  }));
 }

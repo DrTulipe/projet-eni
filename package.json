@@ -9,12 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@fullcalendar/react": "^6.0.4",
+    "@mui/icons-material": "^5.14.14",
+    "@mui/material": "^5.14.14",
     "@types/jquery": "^3.5.16",
     "@types/moment": "^2.13.0",
     "classnames": "^2.3.2",
     "daisyui": "^2.47.0",
-    "font-awesome": "^4.7.0",
     "fullcalendar": "^6.0.3",
     "jquery": "^3.6.3",
     "moment": "^2.29.4",

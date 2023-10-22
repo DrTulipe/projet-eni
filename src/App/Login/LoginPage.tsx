@@ -91,7 +91,7 @@ export function useCheckConnection() {
     const checkConnection = async () => {
       try {
         const { error, result } = await ApiPost(
-          "/api/token/validate"
+          "/api/validate/token"
         );
 
         if (

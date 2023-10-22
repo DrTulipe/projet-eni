@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { ApiGet } from "../../Framework/useApi/useApiGet";
 import { ApiPost } from "../../Framework/useApi/useApiPost";
 import Button from "../../Framework/Button";
-import "./widgetTab.css";
-import "font-awesome/css/font-awesome.min.css";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 export interface CampusInterface {
   id?: number;
@@ -35,8 +35,11 @@ export function EditCampusModal(props: {
   isModalCampusOpen: boolean;
   setIsModalCampusOpen: React.Dispatch<React.SetStateAction<boolean>>;
   campusSelected: CampusInterface;
+  setCampusSelected: React.Dispatch<
+    React.SetStateAction<CampusInterface | undefined>
+  >;
 }) {
-  const { isModalCampusOpen, setIsModalCampusOpen, campusSelected } = props;
+  const { isModalCampusOpen, setIsModalCampusOpen, campusSelected, setCampusSelected } = props;
 
   const [formData, setFormData] = useState<CampusInterface>(campusSelected);
 
@@ -134,7 +137,13 @@ export function EditCampusModal(props: {
             </form>
           </div>
           <div className="modal-action">
-            <button onClick={() => setIsModalCampusOpen(false)} className="btn">
+            <button
+              onClick={() => {
+                setIsModalCampusOpen(false);
+                setCampusSelected(undefined);
+              }}
+              className="btn"
+            >
               Annuler
             </button>
             <button
@@ -356,49 +365,52 @@ export function CampusListCard() {
         </Button>
       </div>
       <div className="card-content">
-        <table className="table w-full table-scrollable">
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Ville</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {campusList.map((campus) => (
-              <tr key={campus.id}>
-                <td>{campus.libelle}</td>
-                <td>{campus.ville}</td>
-                <td>
-                  <button
-                    className="btn btn-outline btn-accent"
-                    onClick={() => handleModifierCampus(campus)}
-                  >
-                    <i className="fa fa-cog text-current"></i>
-                  </button>
-                  <button
-                    className="btn btn-outline btn-error"
-                    onClick={() => handleSupprimerCampus(campus)}
-                  >
-                    <i className="fa fa-times text-red-500"></i>
-                  </button>
-                </td>
+        <div className="bidule">
+          <table className="table w-full table-scrollable">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Ville</th>
+                <th className="action-column">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <CreateCampusModal
-        showModalCreateCampus={showModalCreateCampus}
-        setShowModalCreateCampus={setShowModalCreateCampus}
-      />
-      {campusSelected && (
-        <EditCampusModal
-          isModalCampusOpen={isModalCampusOpen}
-          setIsModalCampusOpen={setIsModalCampusOpen}
-          campusSelected={campusSelected}
+            </thead>
+            <tbody>
+              {campusList.map((campus) => (
+                <tr key={campus.id}>
+                  <td>{campus.libelle}</td>
+                  <td>{campus.ville}</td>
+                  <td className="action-column">
+                    <button
+                      className="btn btn-outline btn-accent"
+                      onClick={() => handleModifierCampus(campus)}
+                    >
+                      <EditIcon />
+                    </button>
+                    <button
+                      className="btn btn-outline btn-error"
+                      onClick={() => handleSupprimerCampus(campus)}
+                    >
+                      <DeleteIcon />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <CreateCampusModal
+          showModalCreateCampus={showModalCreateCampus}
+          setShowModalCreateCampus={setShowModalCreateCampus}
         />
-      )}
+        {campusSelected && (
+          <EditCampusModal
+            isModalCampusOpen={isModalCampusOpen}
+            setIsModalCampusOpen={setIsModalCampusOpen}
+            campusSelected={campusSelected}
+            setCampusSelected={setCampusSelected}
+          />
+        )}
+      </div>
     </div>
   );
 }
