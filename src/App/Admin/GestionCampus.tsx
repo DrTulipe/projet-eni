@@ -3,6 +3,7 @@ import { ApiGet } from "../../Framework/useApi/useApiGet";
 import { ApiPost } from "../../Framework/useApi/useApiPost";
 import Button from "../../Framework/Button";
 import "./widgetTab.css";
+import "font-awesome/css/font-awesome.min.css";
 
 export interface CampusInterface {
   id?: number;
@@ -309,7 +310,6 @@ export function CampusListCard() {
   // * Fonctions
   const handleModifierCampus = (campusSelected: CampusInterface) => {
     if (!campusSelected) return;
-    setCampus(campusList.filter((campus) => campus.id !== campusSelected.id));
     setCampusSelected(campusSelected);
     setIsModalCampusOpen(true);
   };
@@ -374,13 +374,13 @@ export function CampusListCard() {
                     className="btn btn-outline btn-accent"
                     onClick={() => handleModifierCampus(campus)}
                   >
-                    Enregistrer
+                    <i className="fa fa-cog text-current"></i>
                   </button>
                   <button
                     className="btn btn-outline btn-error"
                     onClick={() => handleSupprimerCampus(campus)}
                   >
-                    Supprimer
+                    <i className="fa fa-times text-red-500"></i>
                   </button>
                 </td>
               </tr>
