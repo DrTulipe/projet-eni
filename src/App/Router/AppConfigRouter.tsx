@@ -10,25 +10,34 @@ import {
 import { Navbar } from "../../Framework/Navbar/NavBar";
 import { LandingPage } from "../LandingPage/LandingPage";
 import { Planning } from "../Planning/Planning";
-import { Compte } from "../Utilisateur/Compte";
+import { Compte, UtilisateurInterface } from "../Utilisateur/Compte";
 import { Formations } from "../Formations/Formations";
 import { AdminPanel } from "../Admin/AdminPanel";
 import { SupportPage } from "../Support/SupportPage";
+export function getUserInfo() {
+  const userBrut = localStorage.getItem("user");
+  const userClean = userBrut ? JSON.parse(userBrut) : "";
+  return userClean;
+}
+
 export function AppConfigRouter() {
   const isLogged = localStorage.getItem("isLogged");
+  const userClean = getUserInfo();
+
   useCheckConnection();
   console.log(isLogged);
   return (
     <>
       <Navbar />
       <Routes>
-        {isLogged === "true" ? (
+        {isLogged === "true" && userClean !== "" ? (
           <>
             <Route path="/" element={<LandingPage />} />
             <Route path="/planning" element={<Planning />} />
             <Route path="/account" element={<LoginPage />} />
             <Route path="/compte" element={<Compte />} />
-            <Route path="/admin" element={<AdminPanel />} />
+            {  userClean?.roles && userClean?.roles[0] !== "ROLE_USER" && <Route path="/admin" element={<AdminPanel />} />}
+            {/* <Route path="/admin" element={<AdminPanel />} /> */}
             <Route path="/support" element={<SupportPage />} />
             <Route path="/formations" element={<Formations />} />
             <Route path="/login" element={<LoginPage />} />

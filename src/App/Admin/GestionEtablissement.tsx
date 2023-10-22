@@ -5,7 +5,7 @@ import Button from "../../Framework/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-export interface CampusInterface {
+export interface BatimentInterface {
   id?: number;
   libelle: string;
   numVoie: string;
@@ -15,56 +15,56 @@ export interface CampusInterface {
   numeroTel: number;
 }
 
-export async function fetchCampus() {
-  const result = await ApiGet("/api/etablissements");
+export async function fetchBatiment() {
+  const result = await ApiGet("/api/batiments");
   return result;
 }
 
-export async function createCampus(data: CampusInterface) {
-  const { result, error } = await ApiPost("/api/campus", data);
+export async function createBatiment(data: BatimentInterface) {
+  const { result, error } = await ApiPost("/api/batiments", data);
 
   if (error) {
-    console.error("Erreur lors de la création du campus:", error);
+    console.error("Erreur lors de la création du batiment:", error);
     return null;
   }
 
   return result;
 }
 
-export function EditCampusModal(props: {
-  isModalCampusOpen: boolean;
-  setIsModalCampusOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  campusSelected: CampusInterface;
-  setCampusSelected: React.Dispatch<
-    React.SetStateAction<CampusInterface | undefined>
+export function EditBatimentModal(props: {
+  isModalBatimentOpen: boolean;
+  setIsModalBatimentOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  batimentSelected: BatimentInterface;
+  setBatimentSelected: React.Dispatch<
+    React.SetStateAction<BatimentInterface | undefined>
   >;
 }) {
   const {
-    isModalCampusOpen,
-    setIsModalCampusOpen,
-    campusSelected,
-    setCampusSelected,
+    isModalBatimentOpen,
+    setIsModalBatimentOpen,
+    batimentSelected,
+    setBatimentSelected,
   } = props;
 
-  const [formData, setFormData] = useState<CampusInterface>(campusSelected);
+  const [formData, setFormData] = useState<BatimentInterface>(batimentSelected);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  if (!isModalCampusOpen) return null;
+  if (!isModalBatimentOpen) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="modal modal-open">
         <div className="modal-box">
-          <h2 className="text-2xl font-semibold mb-4">Modifier Campus</h2>
+          <h2 className="text-2xl font-semibold mb-4">Modifier Batiment</h2>
           <div>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 // todo soumission du form
-                ApiPost("/api/campus", formData);
+                ApiPost("/api/batiment", formData);
               }}
             >
               <div className="mb-4">
@@ -144,8 +144,8 @@ export function EditCampusModal(props: {
           <div className="modal-action">
             <button
               onClick={() => {
-                setIsModalCampusOpen(false);
-                setCampusSelected(undefined);
+                setIsModalBatimentOpen(false);
+                setBatimentSelected(undefined);
               }}
               className="btn"
             >
@@ -153,8 +153,7 @@ export function EditCampusModal(props: {
             </button>
             <button
               onClick={() => {
-                // Traitez la soumission de modifications ici
-                setIsModalCampusOpen(false);
+                setIsModalBatimentOpen(false);
               }}
               className="btn btn-primary"
             >
@@ -167,13 +166,13 @@ export function EditCampusModal(props: {
   );
 }
 
-export function CreateCampusModal(props: {
-  showModalCreateCampus: boolean;
-  setShowModalCreateCampus: React.Dispatch<React.SetStateAction<boolean>>;
+export function CreateBatimentModal(props: {
+  showModalCreateBatiment: boolean;
+  setShowModalCreateBatiment: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { setShowModalCreateCampus, showModalCreateCampus } = props;
+  const { setShowModalCreateBatiment, showModalCreateBatiment } = props;
 
-  const [formData, setFormData] = useState<CampusInterface>({
+  const [formData, setFormData] = useState<BatimentInterface>({
     libelle: "",
     numVoie: "",
     rue: "",
@@ -187,20 +186,20 @@ export function CreateCampusModal(props: {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  if (!showModalCreateCampus) return null;
+  if (!showModalCreateBatiment) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="modal modal-open">
         <div className="modal-box">
-          <h2 className="text-2xl font-semibold mb-4">Créer Campus</h2>
+          <h2 className="text-2xl font-semibold mb-4">Créer Batiment</h2>
           <div>
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
                 // todo soumission du form
-                const response = await ApiPost("/api/campus", formData);
+                const response = await ApiPost("/api/batiments", formData);
                 if (response) {
-                  setShowModalCreateCampus(false);
+                  setShowModalCreateBatiment(false);
                 }
               }}
             >
@@ -280,7 +279,7 @@ export function CreateCampusModal(props: {
           </div>
           <div className="modal-action">
             <button
-              onClick={() => setShowModalCreateCampus(false)}
+              onClick={() => setShowModalCreateBatiment(false)}
               className="btn"
             >
               Annuler
@@ -301,72 +300,74 @@ export function CreateCampusModal(props: {
   );
 }
 
-export function CampusListCard() {
+export function BatimentListCard() {
   // * States
-  const openModalCreateCampus = () => setShowModalCreateCampus(true);
-  const [campusList, setCampus] = useState<CampusInterface[]>([]);
-  const [showModalCreateCampus, setShowModalCreateCampus] =
+  const openModalCreateBatiment = () => setShowModalCreateBatiment(true);
+  const [batimentList, setBatiment] = useState<BatimentInterface[]>([]);
+  const [showModalCreateBatiment, setShowModalCreateBatiment] =
     useState<boolean>(false);
-  const [campusSelected, setCampusSelected] = useState<
-    CampusInterface | undefined
+  const [batimentSelected, setBatimentSelected] = useState<
+    BatimentInterface | undefined
   >(undefined);
-  const [isModalCampusOpen, setIsModalCampusOpen] = useState(false);
-  const [campusName, setCampusName] = useState<string>("");
+  const [isModalBatimentOpen, setIsModalBatimentOpen] = useState(false);
+  const [batimentName, setBatimentName] = useState<string>("");
 
   useEffect(() => {
     async function loadData() {
-      const loadedCampus: CampusInterface[] = await fetchCampus();
-      setCampus(loadedCampus);
+      const loadedBatiment: BatimentInterface[] = await fetchBatiment();
+      setBatiment(loadedBatiment);
     }
     loadData();
   }, []);
 
   // * Fonctions
-  const handleModifierCampus = (campusSelected: CampusInterface) => {
-    if (!campusSelected) return;
-    setCampusSelected(campusSelected);
-    setIsModalCampusOpen(true);
+  const handleModifierBatiment = (batimentSelected: BatimentInterface) => {
+    if (!batimentSelected) return;
+    setBatimentSelected(batimentSelected);
+    setIsModalBatimentOpen(true);
   };
-  const closeModalCreateCampus = () => setShowModalCreateCampus(false);
+  const closeModalCreateBatiment = () => setShowModalCreateBatiment(false);
 
-  const handleSubmitCampus = async (data: any) => {
-    const newCampus = await createCampus(data);
-    if (!newCampus) {
+  const handleSubmitBatiment = async (data: any) => {
+    const newBatiment = await createBatiment(data);
+    if (!newBatiment) {
       alert("Un erreur est survenue lors de la création");
       return;
     }
-    setCampus((prev) => [...prev, newCampus]);
-    closeModalCreateCampus();
-    setCampusName("");
+    setBatiment((prev) => [...prev, newBatiment]);
+    closeModalCreateBatiment();
+    setBatimentName("");
   };
 
-  const handleAddCampus = async () => {
-    if (campusName.trim() === "") {
-      alert("Veuillez saisir un nom de campus.");
+  const handleAddBatiment = async () => {
+    if (batimentName.trim() === "") {
+      alert("Veuillez saisir un nom de batiment.");
       return;
     }
 
-    await handleSubmitCampus({ name: campusName });
+    await handleSubmitBatiment({ name: batimentName });
   };
-  const handleSupprimerCampus = (campusSelected: CampusInterface) => {
-    if (!campusSelected) return;
-    if (!window.confirm("êtes vous sur de vouloir supprimer ce campus ?"))
+  const handleSupprimerBatiment = (batimentSelected: BatimentInterface) => {
+    if (!batimentSelected) return;
+    if (!window.confirm("êtes vous sur de vouloir supprimer ce batiment ?"))
       return;
-    setCampus(campusList.filter((campus) => campus.id !== campusSelected.id));
-    // todo appel api pour supprimer le campus
-    ApiPost("/api/campus/delete", campusSelected);
+    setBatiment(
+      batimentList.filter((batiment) => batiment.id !== batimentSelected.id)
+    );
+    // todo appel api pour supprimer le batiment
+    ApiPost("/api/batiment/delete", batimentSelected);
   };
 
   return (
     <div className="card">
       <div className="card-header">
-        <h2>Gestion des Campus</h2>
+        <h2>Gestion des Batiments</h2>
         <Button
           onClick={() => {
-            openModalCreateCampus();
+            openModalCreateBatiment();
           }}
         >
-          Ajouter un campus
+          Ajouter un batiment
         </Button>
       </div>
       <div className="card-content">
@@ -380,20 +381,20 @@ export function CampusListCard() {
               </tr>
             </thead>
             <tbody>
-              {campusList.map((campus) => (
-                <tr key={campus.id}>
-                  <td>{campus.libelle}</td>
-                  <td>{campus.ville}</td>
+              {batimentList.map((batiment) => (
+                <tr key={batiment.id}>
+                  <td>{batiment.libelle}</td>
+                  <td>{batiment.ville}</td>
                   <td className="action-column">
                     <button
                       className="btn btn-outline btn-accent"
-                      onClick={() => handleModifierCampus(campus)}
+                      onClick={() => handleModifierBatiment(batiment)}
                     >
                       <EditIcon />
                     </button>
                     <button
                       className="btn btn-outline btn-error"
-                      onClick={() => handleSupprimerCampus(campus)}
+                      onClick={() => handleSupprimerBatiment(batiment)}
                     >
                       <DeleteIcon />
                     </button>
@@ -403,16 +404,16 @@ export function CampusListCard() {
             </tbody>
           </table>
         </div>
-        <CreateCampusModal
-          showModalCreateCampus={showModalCreateCampus}
-          setShowModalCreateCampus={setShowModalCreateCampus}
+        <CreateBatimentModal
+          showModalCreateBatiment={showModalCreateBatiment}
+          setShowModalCreateBatiment={setShowModalCreateBatiment}
         />
-        {campusSelected && (
-          <EditCampusModal
-            isModalCampusOpen={isModalCampusOpen}
-            setIsModalCampusOpen={setIsModalCampusOpen}
-            campusSelected={campusSelected}
-            setCampusSelected={setCampusSelected}
+        {batimentSelected && (
+          <EditBatimentModal
+            isModalBatimentOpen={isModalBatimentOpen}
+            setIsModalBatimentOpen={setIsModalBatimentOpen}
+            batimentSelected={batimentSelected}
+            setBatimentSelected={setBatimentSelected}
           />
         )}
       </div>

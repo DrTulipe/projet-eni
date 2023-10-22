@@ -3,9 +3,11 @@ import { FaChevronDown } from "react-icons/fa";
 import { GiChickenOven } from "react-icons/gi";
 import BrandIconUrl from "../../../public/images-logo/PLANNING BY DAY Logo - Original.svg";
 import { useNavigate } from "react-router-dom";
+import { getUserInfo } from "../../App/Router/AppConfigRouter";
 
 export function Navbar() {
   const isLogged = localStorage.getItem("isLogged");
+  const userClean = getUserInfo();
 
   console.log("Navbar", isLogged);
   const navigate = useNavigate();
@@ -26,15 +28,19 @@ export function Navbar() {
       <div className="flex-none">
         {isLogged === "true" ? (
           <ul className="menu menu-horizontal px-1">
-            <li>
-              <a
-                onClick={() => {
-                  navigate("/admin");
-                }}
-              >
-                Admin
-              </a>
-            </li>
+            {userClean !== "" &&
+              userClean?.roles &&
+              userClean?.roles[0] !== "ROLE_USER" && (
+                <li>
+                  <a
+                    onClick={() => {
+                      navigate("/admin");
+                    }}
+                  >
+                    Admin
+                  </a>
+                </li>
+              )}
             <li>
               <a
                 onClick={() => {
@@ -44,15 +50,19 @@ export function Navbar() {
                 Planning
               </a>
             </li>
-            <li>
-              <a
-                onClick={() => {
-                  navigate("/support");
-                }}
-              >
-                Support
-              </a>
-            </li>
+            {userClean !== "" &&
+              userClean?.roles &&
+              userClean?.roles[0] !== "ROLE_USER" && (
+                <li>
+                  <a
+                    onClick={() => {
+                      navigate("/support");
+                    }}
+                  >
+                    Support
+                  </a>
+                </li>
+              )}
             <li tabIndex={0}>
               <a>
                 {/* <div className="avatar">

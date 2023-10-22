@@ -20,8 +20,12 @@ import premium from "./premium.png";
 import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { UtilisateurInterface } from "../Utilisateur/Compte";
 import { UtilisateurList } from "../Utilisateur/UtilisateurList";
+import { getUserInfo } from "../Router/AppConfigRouter";
+import { BatimentListCard } from "./GestionEtablissement";
+import { ModuleFormationListCard } from "./GestionCours";
 
 export function AdminPanel() {
+  const userClean = getUserInfo();
   return (
     <div>
       <div className="admin-container">
@@ -29,33 +33,40 @@ export function AdminPanel() {
           <b>Panneau Administrateur</b>
         </h1>
         <div className="admin-panel">
-          <UtilisateurList />
+          {userClean !== "" &&
+            userClean?.roles &&
+            userClean?.roles[0] === "ROLE_ADMIN" && <UtilisateurList />}
           <ClasseList />
-          <CampusListCard />
-          <div className="card">
+          {userClean !== "" &&
+            userClean?.roles &&
+            userClean?.roles[0] === "ROLE_ADMIN" && (
+              <>
+                <CampusListCard />
+                <BatimentListCard />
+              </>
+            )}
+            <ModuleFormationListCard />
+          {/* <div className="card">
             <div className="card-header">
               <h2>Gestion des Abonnements</h2>
             </div>
             <div className="card-content flex justify-between">
-              {/* Abonnement 1 */}
               <div className="subscription">
                 <img src={essentielle} alt="Essentielle" />
                 <button className="subscribe-btn">Souscrire</button>
               </div>
 
-              {/* Abonnement 2 */}
               <div className="subscription">
                 <img src={avancee} alt="Avancée" />
                 <button className="subscribe-btn">Souscrire</button>
               </div>
 
-              {/* Abonnement 3 */}
               <div className="subscription">
                 <img src={premium} alt="Premium" />
                 <button className="subscribe-btn">Souscrire</button>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

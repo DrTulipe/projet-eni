@@ -90,9 +90,7 @@ export function useCheckConnection() {
   useEffect(() => {
     const checkConnection = async () => {
       try {
-        const { error, result } = await ApiPost(
-          "/api/validate/token"
-        );
+        const { error, result } = await ApiPost("/api/validate/token");
 
         if (
           result === null ||
@@ -105,6 +103,7 @@ export function useCheckConnection() {
           navigate("/login");
         } else {
           localStorage.setItem("isLogged", "true");
+          localStorage.setItem("user", result.user);
           console.log("Connection OK!", isLogged);
         }
       } catch (error) {

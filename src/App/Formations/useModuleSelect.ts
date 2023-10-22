@@ -5,6 +5,7 @@ import { ApiGet } from "../../Framework/useApi/useApiGet";
 export interface ModuleFormationInterface {
   id: number;
   libelle: string;
+  duree?: string;
 }
 
 export function useModuleSelect() {
