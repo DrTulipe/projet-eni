@@ -14,6 +14,7 @@ import { Compte, UtilisateurInterface } from "../Utilisateur/Compte";
 import { Formations } from "../Formations/Formations";
 import { AdminPanel } from "../Admin/AdminPanel";
 import { SupportPage } from "../Support/SupportPage";
+
 export function getUserInfo() {
   const userBrut = localStorage.getItem("user");
   const userClean = userBrut ? JSON.parse(userBrut) : "";

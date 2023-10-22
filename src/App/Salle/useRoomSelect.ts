@@ -4,6 +4,7 @@ import { ApiGet } from "../../Framework/useApi/useApiGet";
 export interface SalleInterface {
   id: number;
   libelle: string;
+  nbPlace?: number;
 }
 
 export function useRoomSelect() {

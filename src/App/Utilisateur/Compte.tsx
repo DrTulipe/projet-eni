@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { ApiGet } from "../../Framework/useApi/useApiGet";
 import { ApiPost } from "../../Framework/useApi/useApiPost";
+import { getUserInfo } from "../Router/AppConfigRouter";
+import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 
 export interface UtilisateurInterface {
   id?: number;
@@ -11,10 +13,11 @@ export interface UtilisateurInterface {
   prenom: string;
   roles: any[];
   password: string;
+  passwordNew?: string;
 }
 
 export function Compte() {
-  const [user, setUser] = useState<UtilisateurInterface | undefined>(undefined);
+  const userClean = getUserInfo();
   const [formData, setFormData] = useState<UtilisateurInterface>({
     etablissement_id: 0,
     email: "",
@@ -22,25 +25,26 @@ export function Compte() {
     prenom: "",
     roles: [],
     password: "",
+    passwordNew: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordNew, setShowPasswordNew] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      const response = await ApiGet("/api/user?id_user=");
-      if (response.result) {
-        const data = response.result;
-        setUser(data);
-
+      const response = await ApiGet(
+        "/api/utilisateurs/" + (userClean !== "" ? userClean.id : "")
+      );
+      if (response) {
         setFormData({
-          etablissement_id: data.etablissement_id,
-          email: data.email,
-          nom: data.nom,
-          prenom: data.prenom,
-          roles: data.roles,
-          password: data.password,
+          etablissement_id: response.etablissement_id,
+          email: response.email,
+          nom: response.nom,
+          prenom: response.prenom,
+          roles: response.roles,
+          password: "",
+          passwordNew: "",
         });
       }
     };
@@ -62,15 +66,26 @@ export function Compte() {
     setShowPassword(!showPassword);
   };
 
+  const toggleShowPasswordNew = () => {
+    setShowPasswordNew(!showPasswordNew);
+  };
+
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     // todo envoi des données
-    ApiPost("/api/user", {
-      formData,
+    ApiPut("/api/utilisateurs/" + (userClean !== "" ? userClean.id : ""), {
+      etablissement_id: formData.etablissement_id,
+      email: formData.email,
+      nom: formData.nom,
+      prenom: formData.prenom,
+      roles: formData.roles,
+      password: formData.password,
+      passwordNew: formData.passwordNew,
     });
     console.log("Données du formulaire soumises :", formData);
   };
-
+  console.log(formData);
+  if (!formData) return null;
   return (
     <div className="max-w-md mx-auto p-6 space-y-4">
       <div className="bg-white shadow-md rounded p-6">
@@ -114,7 +129,7 @@ export function Compte() {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
-              Mot de passe :
+              Ancien Mot de passe :
             </label>
             <div className="relative">
               <input
@@ -130,6 +145,27 @@ export function Compte() {
                 className="absolute inset-y-0 right-0 px-2 py-1 flex items-center text-gray-600 hover:text-gray-800"
               >
                 {showPassword ? "Cacher" : "Afficher"}
+              </button>
+            </div>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Nouveau Mot de passe :
+            </label>
+            <div className="relative">
+              <input
+                type={showPasswordNew ? "text" : "password"}
+                name="passwordNew"
+                value={formData?.passwordNew}
+                onChange={handleInputChange}
+                className="input input-bordered w-full pr-10"
+              />
+              <button
+                type="button"
+                onClick={toggleShowPasswordNew}
+                className="absolute inset-y-0 right-0 px-2 py-1 flex items-center text-gray-600 hover:text-gray-800"
+              >
+                {showPasswordNew ? "Cacher" : "Afficher"}
               </button>
             </div>
           </div>

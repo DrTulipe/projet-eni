@@ -23,6 +23,7 @@ import { UtilisateurList } from "../Utilisateur/UtilisateurList";
 import { getUserInfo } from "../Router/AppConfigRouter";
 import { BatimentListCard } from "./GestionEtablissement";
 import { ModuleFormationListCard } from "./GestionCours";
+import { SalleListCard } from "./GestionSalles";
 
 export function AdminPanel() {
   const userClean = getUserInfo();
@@ -46,6 +47,7 @@ export function AdminPanel() {
               </>
             )}
             <ModuleFormationListCard />
+            <SalleListCard />
           {/* <div className="card">
             <div className="card-header">
               <h2>Gestion des Abonnements</h2>
