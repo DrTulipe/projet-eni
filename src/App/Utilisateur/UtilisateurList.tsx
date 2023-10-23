@@ -8,6 +8,7 @@ import { fetchFormateurs, createFormateur } from "./GestionUtilisateurs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
+import { roles } from "./SelectRole";
 
 export function UtilisateurList() {
   const [utilisateurSelected, setUtilisateurSelected] = useState<
@@ -77,6 +78,7 @@ export function UtilisateurList() {
           <thead>
             <tr>
               <th>Nom</th>
+              <th>Role</th>
               <th className="action-column">Action</th>
             </tr>
           </thead>
@@ -84,6 +86,7 @@ export function UtilisateurList() {
             {utilisateurList.map((utilisateur) => (
               <tr key={utilisateur.id}>
                 <td>{utilisateur.nom + " " + utilisateur.prenom}</td>
+                <td>{(utilisateur.roles && utilisateur.roles[0] === "ROLE_ADMIN") ? "Responsable pédagogique" : (utilisateur.roles && utilisateur.roles[0] === "ROLE_RESPONSABLE_PLANNING") ? "Responsable Planning" : "Enseignant"}</td>
                 <td className="action-column">
                   <button
                     className="btn btn-outline btn-accent"

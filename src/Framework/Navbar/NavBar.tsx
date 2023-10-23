@@ -8,8 +8,6 @@ import { getUserInfo } from "../../App/Router/AppConfigRouter";
 export function Navbar() {
   const isLogged = localStorage.getItem("isLogged");
   const userClean = getUserInfo();
-
-  console.log("Navbar", isLogged);
   const navigate = useNavigate();
   return (
     <div className="navbar bg-base-100">

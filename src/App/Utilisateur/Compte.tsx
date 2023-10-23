@@ -81,9 +81,7 @@ export function Compte() {
       password: formData.password,
       passwordNew: formData.passwordNew,
     });
-    console.log("Données du formulaire soumises :", formData);
   };
-  console.log(formData);
   if (!formData) return null;
   return (
     <div className="max-w-md mx-auto p-6 space-y-4">

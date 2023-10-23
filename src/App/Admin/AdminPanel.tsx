@@ -21,7 +21,7 @@ import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { UtilisateurInterface } from "../Utilisateur/Compte";
 import { UtilisateurList } from "../Utilisateur/UtilisateurList";
 import { getUserInfo } from "../Router/AppConfigRouter";
-import { BatimentListCard } from "./GestionEtablissement";
+import { BatimentListCard } from "./GestionBatiment";
 import { ModuleFormationListCard } from "./GestionCours";
 import { SalleListCard } from "./GestionSalles";
 

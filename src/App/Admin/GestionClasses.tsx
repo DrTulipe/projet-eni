@@ -4,6 +4,8 @@ import { ApiPost } from "../../Framework/useApi/useApiPost";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Button from "../../Framework/Button";
+import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
+import { selectClasses } from "@mui/material";
 
 export interface ClasseInterface {
   id: number;
@@ -123,8 +125,16 @@ export function CreateClasseModal(props: {
 
 export function ClasseList() {
   const [classes, setClasses] = useState<ClasseInterface[]>([]);
+  const [classeSelected, setClasseSelected] = useState<ClasseInterface>({
+    id: 0,
+    libelle: "",
+    nombreEleves: 0,
+  });
+  const [refreshList, setRefreshList] = useState<number>(0);
 
   const [showModalClasse, setShowModalClasse] = useState<boolean>(false);
+  const [showModalClasseEdit, setShowModalClasseEdit] =
+    useState<boolean>(false);
 
   const [classeName, setClasseName] = useState<string>("");
 
@@ -144,21 +154,41 @@ export function ClasseList() {
     }
 
     loadData();
-  }, []);
+  }, [refreshList]);
 
   const handleSubmitClasse = async (data: any) => {
     const newClass = await createClass(data);
-    setClasses((prev) => [...prev, newClass]);
+    setRefreshList((prev) => prev + 1);
   };
 
-  const handleModifierClasse = (id: number) => {
+  const handleModifierClasse = (classe: ClasseInterface) => {
+    setShowModalClasseEdit(true);
+    setClasseSelected(classe);
     // setClasses(classes.filter((formateur) => formateur.id !== id));
     // todo modal de modification
+  };
+
+  const handleEditClasseSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    ApiPut("/api/classes/" + classeSelected?.id, {
+      libelle: classeSelected?.libelle,
+      nombreEleves: classeSelected?.nombreEleves,
+      cursusId: 1,
+    });
+    setShowModalClasseEdit(false);
+    setRefreshList((prev) => prev + 1);
   };
 
   const handleSupprimerClasse = (id: number) => {
     setClasses(classes.filter((formateur) => formateur.id !== id));
     // todo appel api pour supprimer la classe
+    setRefreshList((prev) => prev + 1);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    console.log(classeSelected, e, name, value);
+    setClasseSelected((prev) => ({ ...prev, [name]: value }));
   };
 
   const openModalCreateClasse = () => setShowModalClasse(true);
@@ -194,7 +224,7 @@ export function ClasseList() {
                 <td className="action-column">
                   <button
                     className="btn btn-outline btn-accent"
-                    onClick={() => handleModifierClasse(classe.id)}
+                    onClick={() => handleModifierClasse(classe)}
                   >
                     <EditIcon />
                   </button>
@@ -210,6 +240,67 @@ export function ClasseList() {
           </tbody>
         </table>
       </div>
+      {showModalClasseEdit && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="modal modal-open">
+            <div className="modal-box">
+              <h2 className="text-xl">Modifier une classe</h2>
+              <div>
+                <form onSubmit={handleEditClasseSubmit}>
+                  <div className="mb-4">
+                    <label
+                      className="block text-sm font-medium mb-2"
+                      htmlFor="event-title"
+                    >
+                      Nom de la classe
+                    </label>
+                    <input
+                      type="text"
+                      id="libelle-classe"
+                      name="libelle"
+                      value={classeSelected?.libelle}
+                      onChange={handleInputChange}
+                      className="border p-2 w-full"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label
+                      className="block text-sm font-medium mb-2"
+                      htmlFor="event-title"
+                    >
+                      Nombre de places
+                    </label>
+                    <input
+                      type="text"
+                      name="nombreEleves"
+                      id="places"
+                      value={classeSelected?.nombreEleves}
+                      onChange={handleInputChange}
+                      className="border p-2 w-full"
+                      required
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowModalClasseEdit(false);
+                      }}
+                      className="btn btn-outline mr-2"
+                    >
+                      Annuler
+                    </button>
+                    <button type="submit" className="btn btn-primary">
+                      Enregistrer
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {showModalClasse && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="modal modal-open">
@@ -224,9 +315,26 @@ export function ClasseList() {
                 </label>
                 <input
                   type="text"
-                  id="formateur-name"
-                  value={classeName}
-                  onChange={(e) => setClasseName(e.target.value)}
+                  id="libelle-classe"
+                  value={"libelle"}
+                  onChange={handleInputChange}
+                  className="border p-2 w-full"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  className="block text-sm font-medium mb-2"
+                  htmlFor="event-title"
+                >
+                  Nombre de places
+                </label>
+                <input
+                  type="number"
+                  id="places"
+                  value={0}
+                  name="nombreEleves"
+                  onChange={handleInputChange}
                   className="border p-2 w-full"
                   required
                 />

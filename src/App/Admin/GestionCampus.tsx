@@ -4,11 +4,12 @@ import { ApiPost } from "../../Framework/useApi/useApiPost";
 import Button from "../../Framework/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 
 export interface CampusInterface {
   id?: number;
   libelle: string;
-  numVoie: string;
+  numVoie: number;
   rue: string;
   ville: string;
   codePostal: number;
@@ -21,7 +22,7 @@ export async function fetchCampus() {
 }
 
 export async function createCampus(data: CampusInterface) {
-  const { result, error } = await ApiPost("/api/campus", data);
+  const { result, error } = await ApiPost("/api/etablissements", data);
 
   if (error) {
     console.error("Erreur lors de la création du campus:", error);
@@ -38,12 +39,14 @@ export function EditCampusModal(props: {
   setCampusSelected: React.Dispatch<
     React.SetStateAction<CampusInterface | undefined>
   >;
+  setRefreshList: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const {
     isModalCampusOpen,
     setIsModalCampusOpen,
     campusSelected,
     setCampusSelected,
+    setRefreshList,
   } = props;
 
   const [formData, setFormData] = useState<CampusInterface>(campusSelected);
@@ -53,6 +56,21 @@ export function EditCampusModal(props: {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    ApiPut("/api/etablissements/" + formData.id, {
+      id: formData.id,
+      libelle: formData.libelle,
+      numVoie: formData.numVoie,
+      rue: formData.rue,
+      ville: formData.ville,
+      codePostal: formData.codePostal,
+      numeroTel: formData.numeroTel,
+    });
+    setIsModalCampusOpen(false);
+    setRefreshList((prev) => prev + 1);
+  };
+
   if (!isModalCampusOpen) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -60,13 +78,7 @@ export function EditCampusModal(props: {
         <div className="modal-box">
           <h2 className="text-2xl font-semibold mb-4">Modifier Campus</h2>
           <div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                // todo soumission du form
-                ApiPost("/api/campus", formData);
-              }}
-            >
+            <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Libelle:
@@ -85,7 +97,7 @@ export function EditCampusModal(props: {
                 </label>
                 <input
                   type="text"
-                  name="num_voie"
+                  name="numVoie"
                   value={formData.numVoie}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
@@ -121,7 +133,7 @@ export function EditCampusModal(props: {
                 </label>
                 <input
                   type="number"
-                  name="code_postal"
+                  name="codePostal"
                   value={formData.codePostal}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
@@ -133,33 +145,27 @@ export function EditCampusModal(props: {
                 </label>
                 <input
                   type="number"
-                  name="numero_tel"
+                  name="numeroTel"
                   value={formData.numeroTel}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
               </div>
+              <div className="modal-action">
+                <button
+                  onClick={() => {
+                    setIsModalCampusOpen(false);
+                    setCampusSelected(undefined);
+                  }}
+                  className="btn"
+                >
+                  Annuler
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Enregistrer
+                </button>
+              </div>
             </form>
-          </div>
-          <div className="modal-action">
-            <button
-              onClick={() => {
-                setIsModalCampusOpen(false);
-                setCampusSelected(undefined);
-              }}
-              className="btn"
-            >
-              Annuler
-            </button>
-            <button
-              onClick={() => {
-                // Traitez la soumission de modifications ici
-                setIsModalCampusOpen(false);
-              }}
-              className="btn btn-primary"
-            >
-              Enregistrer
-            </button>
           </div>
         </div>
       </div>
@@ -170,12 +176,14 @@ export function EditCampusModal(props: {
 export function CreateCampusModal(props: {
   showModalCreateCampus: boolean;
   setShowModalCreateCampus: React.Dispatch<React.SetStateAction<boolean>>;
+  setRefreshList: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const { setShowModalCreateCampus, showModalCreateCampus } = props;
+  const { setShowModalCreateCampus, showModalCreateCampus, setRefreshList } =
+    props;
 
   const [formData, setFormData] = useState<CampusInterface>({
     libelle: "",
-    numVoie: "",
+    numVoie: 0,
     rue: "",
     ville: "",
     codePostal: 0,
@@ -197,10 +205,10 @@ export function CreateCampusModal(props: {
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
-                // todo soumission du form
-                const response = await ApiPost("/api/campus", formData);
+                const response = await createCampus(formData);
                 if (response) {
                   setShowModalCreateCampus(false);
+                  setRefreshList((prev) => prev + 1);
                 }
               }}
             >
@@ -222,7 +230,7 @@ export function CreateCampusModal(props: {
                 </label>
                 <input
                   type="text"
-                  name="num_voie"
+                  name="numVoie"
                   value={formData.numVoie}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
@@ -258,7 +266,7 @@ export function CreateCampusModal(props: {
                 </label>
                 <input
                   type="number"
-                  name="code_postal"
+                  name="codePostal"
                   value={formData.codePostal}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
@@ -270,30 +278,30 @@ export function CreateCampusModal(props: {
                 </label>
                 <input
                   type="number"
-                  name="numero_tel"
+                  name="numeroTel"
                   value={formData.numeroTel}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
               </div>
+              <div className="modal-action">
+                <button
+                  onClick={() => setShowModalCreateCampus(false)}
+                  className="btn"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  onClick={() => {
+                    // Traitez la soumission de modifications ici
+                  }}
+                  className="btn btn-primary"
+                >
+                  Enregistrer
+                </button>
+              </div>
             </form>
-          </div>
-          <div className="modal-action">
-            <button
-              onClick={() => setShowModalCreateCampus(false)}
-              className="btn"
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              onClick={() => {
-                // Traitez la soumission de modifications ici
-              }}
-              className="btn btn-primary"
-            >
-              Enregistrer
-            </button>
           </div>
         </div>
       </div>
@@ -312,6 +320,7 @@ export function CampusListCard() {
   >(undefined);
   const [isModalCampusOpen, setIsModalCampusOpen] = useState(false);
   const [campusName, setCampusName] = useState<string>("");
+  const [refreshList, setRefreshList] = useState(0);
 
   useEffect(() => {
     async function loadData() {
@@ -319,7 +328,7 @@ export function CampusListCard() {
       setCampus(loadedCampus);
     }
     loadData();
-  }, []);
+  }, [refreshList]);
 
   // * Fonctions
   const handleModifierCampus = (campusSelected: CampusInterface) => {
@@ -406,6 +415,7 @@ export function CampusListCard() {
         <CreateCampusModal
           showModalCreateCampus={showModalCreateCampus}
           setShowModalCreateCampus={setShowModalCreateCampus}
+          setRefreshList={setRefreshList}
         />
         {campusSelected && (
           <EditCampusModal
@@ -413,6 +423,7 @@ export function CampusListCard() {
             setIsModalCampusOpen={setIsModalCampusOpen}
             campusSelected={campusSelected}
             setCampusSelected={setCampusSelected}
+            setRefreshList={setRefreshList}
           />
         )}
       </div>

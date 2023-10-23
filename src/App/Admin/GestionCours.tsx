@@ -23,7 +23,6 @@ export async function createModuleFormation(data: ModuleFormationInterface) {
 }
 
 export function EditModuleFormationModal(props: {
-  isModalModuleFormationOpen: boolean;
   setIsModalModuleFormationOpen: React.Dispatch<React.SetStateAction<boolean>>;
   moduleFormationSelected: ModuleFormationInterface;
   setModuleFormationSelected: React.Dispatch<
@@ -31,7 +30,6 @@ export function EditModuleFormationModal(props: {
   >;
 }) {
   const {
-    isModalModuleFormationOpen,
     setIsModalModuleFormationOpen,
     moduleFormationSelected,
     setModuleFormationSelected,
@@ -46,7 +44,6 @@ export function EditModuleFormationModal(props: {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  if (!isModalModuleFormationOpen) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="modal modal-open">
@@ -226,7 +223,7 @@ export function ModuleFormationListCard() {
   const handleModifierModuleFormation = (
     moduleFormationSelected: ModuleFormationInterface
   ) => {
-    if (!moduleFormationSelected) return;
+    // if (!moduleFormationSelected) return;
     setModuleFormationSelected(moduleFormationSelected);
     setIsModalModuleFormationOpen(true);
   };
@@ -308,9 +305,9 @@ export function ModuleFormationListCard() {
                     <td className="action-column">
                       <button
                         className="btn btn-outline btn-accent"
-                        onClick={() =>
-                          handleModifierModuleFormation(moduleFormation)
-                        }
+                        onClick={() => {
+                          handleModifierModuleFormation(moduleFormation);
+                        }}
                       >
                         <EditIcon />
                       </button>
@@ -333,9 +330,8 @@ export function ModuleFormationListCard() {
           showModalCreateModuleFormation={showModalCreateModuleFormation}
           setShowModalCreateModuleFormation={setShowModalCreateModuleFormation}
         />
-        {moduleFormationSelected && (
+        {isModalModuleFormationOpen && moduleFormationSelected && (
           <EditModuleFormationModal
-            isModalModuleFormationOpen={isModalModuleFormationOpen}
             setIsModalModuleFormationOpen={setIsModalModuleFormationOpen}
             moduleFormationSelected={moduleFormationSelected}
             setModuleFormationSelected={setModuleFormationSelected}

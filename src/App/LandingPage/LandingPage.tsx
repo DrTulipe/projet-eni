@@ -2,6 +2,7 @@ import { Container } from "../../Framework/Container/Container";
 import BrandIconUrl from "../../../public/images-logo/PLANNING BY DAY Logo - Original (1).svg";
 import planning from "../../../public/planificateur.png";
 import formations from "../../../public/planification.png";
+import reglages from "../../../public/reglages.png";
 import { useNavigate } from "react-router";
 import { getUserInfo } from "../Router/AppConfigRouter";
 
@@ -37,13 +38,12 @@ export function LandingPage() {
                     className="btn btn-primary"
                     onClick={() => navigate("/formations")}
                   >
-                    Aller à la gestion des formations
+                    Accéder à la gestion des formations
                   </button>
                 </div>
               </div>
             </div>
           )}
-
         <div className="card w-2/5 bg-base-100 shadow-xl mb-8">
           <figure className="text-center">
             <img
@@ -63,6 +63,35 @@ export function LandingPage() {
             </div>
           </div>
         </div>
+
+        {userClean !== "" &&
+          userClean?.roles &&
+          userClean?.roles[0] !== "ROLE_USER" && (
+            <div className="card w-2/5 bg-base-100 shadow-xl mb-8">
+              <figure className="text-center">
+                <img
+                  style={{ maxWidth: "100px", maxHeight: "100px" }}
+                  src={reglages}
+                  alt="Reglages"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title">Administration</h2>
+                <p>
+                  Gestion des utilisateurs, des établissements, des classes, des
+                  batiments, des salles et des cursus.
+                </p>
+                <div
+                  className="card-actions justify-end"
+                  onClick={() => navigate("/admin")}
+                >
+                  <button className="btn btn-primary">
+                    Accéder au panel Administratif
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
       </div>
     </Container>
   );

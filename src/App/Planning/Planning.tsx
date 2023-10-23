@@ -80,7 +80,6 @@ export function Planning() {
   };
 
   const handleEventClick = (info: any) => {
-    console.log("info", info, info.event.extendedProps);
     setSelectedEvent(info.event.extendedProps);
     setModalEditOpen(true);
   };
@@ -89,7 +88,6 @@ export function Planning() {
 
   useEffect(() => {
     const fetchEvents = async (filters: any) => {
-      console.log("filters", filters);
       let queryParams = "";
       if (
         filters.etablissementId ||
@@ -106,7 +104,6 @@ export function Planning() {
         if (filters.utilisateurId && filters.utilisateurId !== -1) {
           queryParams += `utilisateurId=${filters.utilisateurId}&`;
         }
-        console.log("queryParams", queryParams);
       }
 
       const result: EvenementInterface[] = await ApiGet(
@@ -150,8 +147,6 @@ export function Planning() {
                 </h2>
                 <PlanningCreateEvent
                   onSubmit={(eventData: any) => {
-                    console.log(eventData);
-                    // Ici, vous pouvez appeler votre API ou autre logique pour sauvegarder l'événement
                     handleCloseModal();
                   }}
                   onClose={handleCloseModal}

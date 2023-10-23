@@ -5,13 +5,13 @@ interface RoleSelectProps {
   onRoleChange: (role: string) => void;
 }
 
+export const roles = [
+  {value:'ROLE_USER', libelle : "Enseignant"},
+  // {value:'ROLE_ADMIN', libelle : "Responsable pédagogique"} ,
+  // {value:'ROLE_SUPPORT', libelle : "Support"},
+  {value:'ROLE_RESPONSABLE_PLANNING', libelle : "Responsable Planning"},
+];
 export const RoleSelect: React.FC<RoleSelectProps> = ({ selectedRole, onRoleChange }) => {
-  const roles = [
-    {value:'ROLE_USER', libelle : "Enseignant"},
-    // {value:'ROLE_ADMIN', libelle : "Responsable pédagogique"} ,
-    // {value:'ROLE_SUPPORT', libelle : "Support"},
-    {value:'ROLE_RESPONSABLE_PLANNING', libelle : "Responsable Planning"},
-  ];
 
   return (
     <select 

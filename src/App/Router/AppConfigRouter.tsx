@@ -26,7 +26,6 @@ export function AppConfigRouter() {
   const userClean = getUserInfo();
 
   useCheckConnection();
-  console.log(isLogged);
   return (
     <>
       <Navbar />
