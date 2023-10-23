@@ -5,6 +5,7 @@ import Button from "../../Framework/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
+import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 
 export interface CampusInterface {
   id?: number;
@@ -349,21 +350,12 @@ export function CampusListCard() {
     setCampusName("");
   };
 
-  const handleAddCampus = async () => {
-    if (campusName.trim() === "") {
-      alert("Veuillez saisir un nom de campus.");
-      return;
-    }
-
-    await handleSubmitCampus({ name: campusName });
-  };
   const handleSupprimerCampus = (campusSelected: CampusInterface) => {
     if (!campusSelected) return;
     if (!window.confirm("êtes vous sur de vouloir supprimer ce campus ?"))
       return;
     setCampus(campusList.filter((campus) => campus.id !== campusSelected.id));
-    // todo appel api pour supprimer le campus
-    ApiPost("/api/campus/delete", campusSelected);
+    ApiDelete("/api/etablissements/" + campusSelected.id);
   };
 
   return (
