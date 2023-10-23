@@ -117,6 +117,7 @@ export function UtilisateurList() {
       <CreateUtilisateurModal
         setShowModalCreateUtilisateur={setShowModalCreateUtilisateur}
         showModalCreateUtilisateur={showModalCreateUtilisateur}
+        setRefreshWidgetFormateur={setRefreshWidgetFormateur}
       />
     </div>
   );

@@ -6,11 +6,11 @@ import { usePromoSelect } from "../Promotion/usePromoSelect";
 import { useRoomSelect } from "../Salle/useRoomSelect";
 
 export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
-  const [endDate, setEndDate] = useState<Date | null>(null); // Date de fin
-  const [selectedTrainer, setSelectedTrainer] = useState(""); // Formateur sélectionné
-  const [selectedModule, setSelectedModule] = useState(""); // Formateur sélectionné
-  const [selectedClass, setSelectedClass] = useState(""); // Classe sélectionnée
-  const [selectedRoom, setSelectedRoom] = useState(""); // Salle sélectionnée
+  const [endDate, setEndDate] = useState<Date | null>(null); 
+  const [selectedTrainer, setSelectedTrainer] = useState("");
+  const [selectedModule, setSelectedModule] = useState("");
+  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedRoom, setSelectedRoom] = useState("");
 
   const selectUserTab = useUtilisateurSelect();
   const selectModuleTab = useModuleSelect();

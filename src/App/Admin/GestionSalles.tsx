@@ -5,6 +5,8 @@ import Button from "../../Framework/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { SalleInterface } from "../Salle/useRoomSelect";
+import { ApiDelete } from "../../Framework/useApi/useApiDelete";
+import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 
 export async function fetchSalle() {
   const result = await ApiGet("/api/salles");
@@ -29,12 +31,14 @@ export function EditSalleModal(props: {
   setSalleSelected: React.Dispatch<
     React.SetStateAction<SalleInterface | undefined>
   >;
+  setRefreshList: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const {
     isModalSalleOpen,
     setIsModalSalleOpen,
     salleSelected,
     setSalleSelected,
+    setRefreshList,
   } = props;
 
   const [formData, setFormData] = useState<SalleInterface>(salleSelected);
@@ -54,7 +58,14 @@ export function EditSalleModal(props: {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                ApiPost("/api/modules", formData);
+                ApiPut("/api/salles/" + formData.id, {
+                  id: formData.id,
+                  libelle: formData.libelle,
+                  nbPlace: formData.nbPlace,
+                  batimentId: 1,
+                });
+                setRefreshList((prev) => prev + 1);
+                setIsModalSalleOpen(false);
               }}
             >
               <div className="mb-4">
@@ -81,26 +92,21 @@ export function EditSalleModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <div className="modal-action">
+                <button
+                  onClick={() => {
+                    setIsModalSalleOpen(false);
+                    setSalleSelected(undefined);
+                  }}
+                  className="btn"
+                >
+                  Annuler
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Enregistrer
+                </button>
+              </div>
             </form>
-          </div>
-          <div className="modal-action">
-            <button
-              onClick={() => {
-                setIsModalSalleOpen(false);
-                setSalleSelected(undefined);
-              }}
-              className="btn"
-            >
-              Annuler
-            </button>
-            <button
-              onClick={() => {
-                setIsModalSalleOpen(false);
-              }}
-              className="btn btn-primary"
-            >
-              Enregistrer
-            </button>
           </div>
         </div>
       </div>
@@ -111,13 +117,16 @@ export function EditSalleModal(props: {
 export function CreateSalleModal(props: {
   showModalCreateSalle: boolean;
   setShowModalCreateSalle: React.Dispatch<React.SetStateAction<boolean>>;
+  setRefreshList: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const { setShowModalCreateSalle, showModalCreateSalle } = props;
+  const { setShowModalCreateSalle, showModalCreateSalle, setRefreshList } =
+    props;
 
   const [formData, setFormData] = useState<SalleInterface>({
     id: 0,
     libelle: "",
     nbPlace: 0,
+    batimentId: 1,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,8 +144,9 @@ export function CreateSalleModal(props: {
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
-                const response = await ApiPost("/api/modules", formData);
+                const response = await ApiPost("/api/salles", formData);
                 if (response) {
+                  setRefreshList((prev) => prev + 1);
                   setShowModalCreateSalle(false);
                 }
               }}
@@ -165,24 +175,18 @@ export function CreateSalleModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <div className="modal-action">
+                <button
+                  onClick={() => setShowModalCreateSalle(false)}
+                  className="btn"
+                >
+                  Annuler
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Enregistrer
+                </button>
+              </div>
             </form>
-          </div>
-          <div className="modal-action">
-            <button
-              onClick={() => setShowModalCreateSalle(false)}
-              className="btn"
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              onClick={() => {
-                // Traitez la soumission de modifications ici
-              }}
-              className="btn btn-primary"
-            >
-              Enregistrer
-            </button>
           </div>
         </div>
       </div>
@@ -191,7 +195,6 @@ export function CreateSalleModal(props: {
 }
 
 export function SalleListCard() {
-  // * States
   const openModalCreateSalle = () => setShowModalCreateSalle(true);
   const [salleList, setSalle] = useState<SalleInterface[]>([]);
   const [showModalCreateSalle, setShowModalCreateSalle] =
@@ -200,7 +203,7 @@ export function SalleListCard() {
     SalleInterface | undefined
   >(undefined);
   const [isModalSalleOpen, setIsModalSalleOpen] = useState(false);
-  const [salleName, setSalleName] = useState<string>("");
+  const [refreshList, setRefreshList] = useState<number>(0);
 
   useEffect(() => {
     async function loadData() {
@@ -208,42 +211,20 @@ export function SalleListCard() {
       setSalle(loadedSalle);
     }
     loadData();
-  }, []);
+  }, [refreshList]);
 
-  // * Fonctions
   const handleModifierSalle = (salleSelected: SalleInterface) => {
     if (!salleSelected) return;
     setSalleSelected(salleSelected);
     setIsModalSalleOpen(true);
   };
-  const closeModalCreateSalle = () => setShowModalCreateSalle(false);
 
-  const handleSubmitSalle = async (data: any) => {
-    const newSalle = await createSalle(data);
-    if (!newSalle) {
-      alert("Un erreur est survenue lors de la création");
-      return;
-    }
-    setSalle((prev) => [...prev, newSalle]);
-    closeModalCreateSalle();
-    setSalleName("");
-  };
-
-  const handleAddSalle = async () => {
-    if (salleName.trim() === "") {
-      alert("Veuillez saisir un nom de salle.");
-      return;
-    }
-
-    await handleSubmitSalle({ name: salleName });
-  };
   const handleSupprimerSalle = (salleSelected: SalleInterface) => {
     if (!salleSelected) return;
-    if (!window.confirm("êtes vous sur de vouloir supprimer ce salle ?"))
+    if (!window.confirm("Êtes vous sur de vouloir supprimer cette salle ?"))
       return;
-    setSalle(salleList.filter((salle) => salle.id !== salleSelected.id));
-    // todo appel api pour supprimer le salle
-    // ApiDelete("/api/modules", salleSelected);
+    ApiDelete("/api/salles/" + salleSelected.id);
+    setRefreshList((prev) => prev + 1);
   };
 
   return (
@@ -276,17 +257,13 @@ export function SalleListCard() {
                   <td className="action-column">
                     <button
                       className="btn btn-outline btn-accent"
-                      onClick={() =>
-                        handleModifierSalle(salle)
-                      }
+                      onClick={() => handleModifierSalle(salle)}
                     >
                       <EditIcon />
                     </button>
                     <button
                       className="btn btn-outline btn-error"
-                      onClick={() =>
-                        handleSupprimerSalle(salle)
-                      }
+                      onClick={() => handleSupprimerSalle(salle)}
                     >
                       <DeleteIcon />
                     </button>
@@ -299,6 +276,7 @@ export function SalleListCard() {
         <CreateSalleModal
           showModalCreateSalle={showModalCreateSalle}
           setShowModalCreateSalle={setShowModalCreateSalle}
+          setRefreshList={setRefreshList}
         />
         {salleSelected && (
           <EditSalleModal
@@ -306,6 +284,7 @@ export function SalleListCard() {
             setIsModalSalleOpen={setIsModalSalleOpen}
             salleSelected={salleSelected}
             setSalleSelected={setSalleSelected}
+            setRefreshList={setRefreshList}
           />
         )}
       </div>

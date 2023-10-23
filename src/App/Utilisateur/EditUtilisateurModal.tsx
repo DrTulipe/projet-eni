@@ -38,7 +38,7 @@ export function EditUtilisateurModal(props: {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     ApiPut("/api/utilisateurs/" + formData.id, {
-      etablissement_id: formData.etablissement_id,
+      etablissement_id: formData.etablissementId,
       email: formData.email,
       nom: formData.nom,
       prenom: formData.prenom,
@@ -57,18 +57,6 @@ export function EditUtilisateurModal(props: {
           <h2 className="text-2xl font-semibold mb-4">Modifier Utilisateur</h2>
           <div>
             <form onSubmit={handleSubmit}>
-              {/* <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Etablissement ID:
-                </label>
-                <input
-                  type="number"
-                  name="etablissement_id"
-                  value={formData.etablissement_id}
-                  onChange={handleInputChange}
-                  className="input input-bordered w-full"
-                />
-              </div> */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Email:
@@ -116,18 +104,6 @@ export function EditUtilisateurModal(props: {
                   }
                 />
               </div>
-              {/* <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Mot de passe:
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="input input-bordered w-full"
-                />
-              </div> */}
               <div className="modal-action">
                 <button
                   onClick={() => setIsModalUtilisateurOpen(false)}

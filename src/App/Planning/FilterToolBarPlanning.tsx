@@ -11,11 +11,11 @@ export function FilterToolBarPlanning(props: {
   setRefreshCount: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const { setRefreshCount } = props;
-  const [selectedTrainer, setSelectedTrainer] = useState(""); // Formateur sélectionné
+  const [selectedTrainer, setSelectedTrainer] = useState("");
   const selectUserTab = useUtilisateurSelect();
-  const [selectedPromo, setSelectedPromo] = useState(""); // Classe sélectionné
+  const [selectedPromo, setSelectedPromo] = useState("");
   const selectPromoTab = usePromoSelect();
-  const [selectedCampus, setSelectedCampus] = useState(""); // Campus sélectionné
+  const [selectedCampus, setSelectedCampus] = useState("");
   const selectCampusTab = useCampusSelect();
 
   useEffect(() => {

@@ -85,7 +85,7 @@ export function Planning() {
     setModalEditOpen(true);
   };
 
-  const [events, setEvents] = useState<any[]>([]); // Nouvel état pour stocker les événements
+  const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchEvents = async (filters: any) => {

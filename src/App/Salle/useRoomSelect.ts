@@ -5,6 +5,7 @@ export interface SalleInterface {
   id: number;
   libelle: string;
   nbPlace?: number;
+  batimentId: number;
 }
 
 export function useRoomSelect() {

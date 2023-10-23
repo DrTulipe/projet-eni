@@ -6,7 +6,7 @@ import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 
 export interface UtilisateurInterface {
   id?: number;
-  etablissement_id?: number;
+  etablissementId?: number;
   etablissement?: { id: number; libelle: string };
   email: string;
   nom: string;
@@ -19,7 +19,7 @@ export interface UtilisateurInterface {
 export function Compte() {
   const userClean = getUserInfo();
   const [formData, setFormData] = useState<UtilisateurInterface>({
-    etablissement_id: 0,
+    etablissementId: 0,
     email: "",
     nom: "",
     prenom: "",
@@ -38,7 +38,7 @@ export function Compte() {
       );
       if (response) {
         setFormData({
-          etablissement_id: response.etablissement_id,
+          etablissementId: response.etablissement_id,
           email: response.email,
           nom: response.nom,
           prenom: response.prenom,
@@ -72,9 +72,8 @@ export function Compte() {
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    // todo envoi des données
     ApiPut("/api/utilisateurs/" + (userClean !== "" ? userClean.id : ""), {
-      etablissement_id: formData.etablissement_id,
+      etablissement_id: formData.etablissementId,
       email: formData.email,
       nom: formData.nom,
       prenom: formData.prenom,

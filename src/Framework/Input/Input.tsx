@@ -33,7 +33,6 @@ export const Input: React.ForwardRefRenderFunction<HTMLInputElement, Props> = (
         name={name}
         type={type}
         width={250}
-        //  ref={ref}
         defaultValue={defaultValue}
         placeholder={placeholder || label || undefined}
       />

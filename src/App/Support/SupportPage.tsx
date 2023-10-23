@@ -37,11 +37,6 @@ export function SupportPage() {
   }, []);
 
   const handleAddTicket = () => {
-    // if (newTicket.title.trim() === "" || newTicket.content.trim() === "") {
-    //   alert("Veuillez compléter les champs.");
-    //   return;
-    // }
-    // setNewTicket({ title: "", content: "" });
     setShowCreate(false);
   };
 

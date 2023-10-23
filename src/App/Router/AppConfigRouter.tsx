@@ -37,7 +37,6 @@ export function AppConfigRouter() {
             <Route path="/account" element={<LoginPage />} />
             <Route path="/compte" element={<Compte />} />
             {  userClean?.roles && userClean?.roles[0] !== "ROLE_USER" && <Route path="/admin" element={<AdminPanel />} />}
-            {/* <Route path="/admin" element={<AdminPanel />} /> */}
             <Route path="/support" element={<SupportPage />} />
             <Route path="/formations" element={<Formations />} />
             <Route path="/login" element={<LoginPage />} />

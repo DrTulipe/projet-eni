@@ -294,9 +294,6 @@ export function CreateCampusModal(props: {
                 </button>
                 <button
                   type="submit"
-                  onClick={() => {
-                    // Traitez la soumission de modifications ici
-                  }}
                   className="btn btn-primary"
                 >
                   Enregistrer
@@ -320,7 +317,6 @@ export function CampusListCard() {
     CampusInterface | undefined
   >(undefined);
   const [isModalCampusOpen, setIsModalCampusOpen] = useState(false);
-  const [campusName, setCampusName] = useState<string>("");
   const [refreshList, setRefreshList] = useState(0);
 
   useEffect(() => {
@@ -337,25 +333,13 @@ export function CampusListCard() {
     setCampusSelected(campusSelected);
     setIsModalCampusOpen(true);
   };
-  const closeModalCreateCampus = () => setShowModalCreateCampus(false);
-
-  const handleSubmitCampus = async (data: any) => {
-    const newCampus = await createCampus(data);
-    if (!newCampus) {
-      alert("Un erreur est survenue lors de la création");
-      return;
-    }
-    setCampus((prev) => [...prev, newCampus]);
-    closeModalCreateCampus();
-    setCampusName("");
-  };
 
   const handleSupprimerCampus = (campusSelected: CampusInterface) => {
     if (!campusSelected) return;
     if (!window.confirm("êtes vous sur de vouloir supprimer ce campus ?"))
       return;
-    setCampus(campusList.filter((campus) => campus.id !== campusSelected.id));
     ApiDelete("/api/etablissements/" + campusSelected.id);
+    setRefreshList((prev) => prev + 1);
   };
 
   return (

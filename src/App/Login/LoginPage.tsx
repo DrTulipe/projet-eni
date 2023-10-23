@@ -82,21 +82,19 @@ export function LoginPage() {
   );
 }
 
-// Fonction pour vérifier la connexion
 export function useCheckConnection(loginStart?: boolean) {
-  const isLogged = localStorage.getItem("isLogged");
 
   const navigate = useNavigate();
   useEffect(() => {
-    checkConnection();
+    const isLogged = checkConnection();
     if (!loginStart) {
       const intervalId = setInterval(checkConnection, 60000);
+      if (!isLogged) navigate("/login");
       return () => clearInterval(intervalId);
     } // 10000ms = 10s
   }, []);
 }
 
-// Fonction pour vérifier la connexion
 async function checkConnection() {
   try {
     const { error, result } = await ApiPost("/api/validate/token");
@@ -116,5 +114,3 @@ async function checkConnection() {
     return false;
   }
 }
-
-//... (reste du code de useCheckConnection)

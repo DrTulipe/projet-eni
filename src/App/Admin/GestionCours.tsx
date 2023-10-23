@@ -5,6 +5,8 @@ import Button from "../../Framework/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { ModuleFormationInterface } from "../Formations/useModuleSelect";
+import { ApiDelete } from "../../Framework/useApi/useApiDelete";
+import TimePicker from "react-time-picker";
 
 export async function fetchModuleFormation() {
   const result = await ApiGet("/api/modules");
@@ -28,16 +30,28 @@ export function EditModuleFormationModal(props: {
   setModuleFormationSelected: React.Dispatch<
     React.SetStateAction<ModuleFormationInterface | undefined>
   >;
+  setRefreshList: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const {
     setIsModalModuleFormationOpen,
     moduleFormationSelected,
     setModuleFormationSelected,
+    setRefreshList,
   } = props;
 
-  const [formData, setFormData] = useState<ModuleFormationInterface>(
-    moduleFormationSelected
-  );
+  const isoToTime = (isoString: string) => {
+    const date = new Date(isoString);
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
+  const [formData, setFormData] = useState<ModuleFormationInterface>({
+    ...moduleFormationSelected,
+    duree: moduleFormationSelected.duree
+      ? isoToTime(moduleFormationSelected.duree)
+      : "",
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,7 +69,21 @@ export function EditModuleFormationModal(props: {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                ApiPost("/api/modules", formData);
+                const [hours, minutes] = formData.duree
+                  ? formData.duree.split(":").map(Number)
+                  : [0, 0];
+                const date = new Date(
+                  Date.UTC(1970, 0, 1, hours, minutes, 0, 0)
+                );
+                const formattedDate = date.toISOString();
+                date.setHours(hours, minutes, 0, 0);
+                const payload = {
+                  ...formData,
+                  duree: formattedDate,
+                };
+                ApiPost("/api/modules", payload);
+                setRefreshList((prev) => prev + 1);
+                setIsModalModuleFormationOpen(false);
               }}
             >
               <div className="mb-4">
@@ -75,33 +103,28 @@ export function EditModuleFormationModal(props: {
                   Durée:
                 </label>
                 <input
-                  type="text"
+                  type="time"
                   name="duree"
                   value={formData.duree || ""}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
               </div>
+              <div className="modal-action">
+                <button
+                  onClick={() => {
+                    setIsModalModuleFormationOpen(false);
+                    setModuleFormationSelected(undefined);
+                  }}
+                  className="btn"
+                >
+                  Annuler
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Enregistrer
+                </button>
+              </div>
             </form>
-          </div>
-          <div className="modal-action">
-            <button
-              onClick={() => {
-                setIsModalModuleFormationOpen(false);
-                setModuleFormationSelected(undefined);
-              }}
-              className="btn"
-            >
-              Annuler
-            </button>
-            <button
-              onClick={() => {
-                setIsModalModuleFormationOpen(false);
-              }}
-              className="btn btn-primary"
-            >
-              Enregistrer
-            </button>
           </div>
         </div>
       </div>
@@ -114,14 +137,18 @@ export function CreateModuleFormationModal(props: {
   setShowModalCreateModuleFormation: React.Dispatch<
     React.SetStateAction<boolean>
   >;
+  setRefreshList: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const { setShowModalCreateModuleFormation, showModalCreateModuleFormation } =
-    props;
+  const {
+    setShowModalCreateModuleFormation,
+    showModalCreateModuleFormation,
+    setRefreshList,
+  } = props;
 
   const [formData, setFormData] = useState<ModuleFormationInterface>({
     id: 0,
     libelle: "",
-    duree: "00:00:00",
+    duree: "00:00",
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,14 +161,29 @@ export function CreateModuleFormationModal(props: {
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="modal modal-open">
         <div className="modal-box">
-          <h2 className="text-2xl font-semibold mb-4">Créer ModuleFormation</h2>
+          <h2 className="text-2xl font-semibold mb-4">
+            Créer un module de formation
+          </h2>
           <div>
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
-                const response = await ApiPost("/api/modules", formData);
+                const [hours, minutes] = formData.duree
+                  ? formData.duree.split(":").map(Number)
+                  : [0, 0];
+                const date = new Date(
+                  Date.UTC(1970, 0, 1, hours, minutes, 0, 0)
+                );
+                const formattedDate = date.toISOString();
+                date.setHours(hours, minutes, 0, 0);
+                const payload = {
+                  ...formData,
+                  duree: formattedDate,
+                };
+                const response = await ApiPost("/api/modules", payload);
                 if (response) {
                   setShowModalCreateModuleFormation(false);
+                  setRefreshList((prev) => prev + 1);
                 }
               }}
             >
@@ -162,31 +204,25 @@ export function CreateModuleFormationModal(props: {
                   Durée:
                 </label>
                 <input
-                  type="text"
+                  type="time"
                   name="duree"
                   value={formData.duree}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
               </div>
+              <div className="modal-action">
+                <button
+                  onClick={() => setShowModalCreateModuleFormation(false)}
+                  className="btn"
+                >
+                  Annuler
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Enregistrer
+                </button>
+              </div>
             </form>
-          </div>
-          <div className="modal-action">
-            <button
-              onClick={() => setShowModalCreateModuleFormation(false)}
-              className="btn"
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              onClick={() => {
-                // Traitez la soumission de modifications ici
-              }}
-              className="btn btn-primary"
-            >
-              Enregistrer
-            </button>
           </div>
         </div>
       </div>
@@ -208,7 +244,7 @@ export function ModuleFormationListCard() {
   >(undefined);
   const [isModalModuleFormationOpen, setIsModalModuleFormationOpen] =
     useState(false);
-  const [moduleFormationName, setModuleFormationName] = useState<string>("");
+  const [refreshList, setRefreshList] = useState<number>(0);
 
   useEffect(() => {
     async function loadData() {
@@ -217,53 +253,28 @@ export function ModuleFormationListCard() {
       setModuleFormation(loadedModuleFormation);
     }
     loadData();
-  }, []);
+  }, [refreshList]);
 
   // * Fonctions
   const handleModifierModuleFormation = (
     moduleFormationSelected: ModuleFormationInterface
   ) => {
-    // if (!moduleFormationSelected) return;
     setModuleFormationSelected(moduleFormationSelected);
     setIsModalModuleFormationOpen(true);
   };
-  const closeModalCreateModuleFormation = () =>
-    setShowModalCreateModuleFormation(false);
 
-  const handleSubmitModuleFormation = async (data: any) => {
-    const newModuleFormation = await createModuleFormation(data);
-    if (!newModuleFormation) {
-      alert("Un erreur est survenue lors de la création");
-      return;
-    }
-    setModuleFormation((prev) => [...prev, newModuleFormation]);
-    closeModalCreateModuleFormation();
-    setModuleFormationName("");
-  };
-
-  const handleAddModuleFormation = async () => {
-    if (moduleFormationName.trim() === "") {
-      alert("Veuillez saisir un nom de moduleFormation.");
-      return;
-    }
-
-    await handleSubmitModuleFormation({ name: moduleFormationName });
-  };
   const handleSupprimerModuleFormation = (
     moduleFormationSelected: ModuleFormationInterface
   ) => {
     if (!moduleFormationSelected) return;
     if (
-      !window.confirm("êtes vous sur de vouloir supprimer ce moduleFormation ?")
+      !window.confirm(
+        "Êtes vous sur de vouloir supprimer ce module de formation ?"
+      )
     )
       return;
-    setModuleFormation(
-      moduleFormationList.filter(
-        (moduleFormation) => moduleFormation.id !== moduleFormationSelected.id
-      )
-    );
-    // todo appel api pour supprimer le moduleFormation
-    // ApiDelete("/api/modules", moduleFormationSelected);
+    ApiDelete("/api/modules/" + moduleFormationSelected.id);
+    setRefreshList((prev) => prev + 1);
   };
 
   return (
@@ -329,12 +340,14 @@ export function ModuleFormationListCard() {
         <CreateModuleFormationModal
           showModalCreateModuleFormation={showModalCreateModuleFormation}
           setShowModalCreateModuleFormation={setShowModalCreateModuleFormation}
+          setRefreshList={setRefreshList}
         />
         {isModalModuleFormationOpen && moduleFormationSelected && (
           <EditModuleFormationModal
             setIsModalModuleFormationOpen={setIsModalModuleFormationOpen}
             moduleFormationSelected={moduleFormationSelected}
             setModuleFormationSelected={setModuleFormationSelected}
+            setRefreshList={setRefreshList}
           />
         )}
       </div>

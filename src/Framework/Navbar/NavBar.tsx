@@ -73,11 +73,6 @@ export function Navbar() {
               )}
             <li tabIndex={0}>
               <a>
-                {/* <div className="avatar">
-                  <div className="w-10 rounded-full">
-                    <img src="https://placeimg.com/192/192/people" />
-                  </div>
-                </div> */}
                 Espace personnel
                 <FaChevronDown />
               </a>

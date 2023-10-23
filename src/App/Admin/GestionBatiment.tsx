@@ -4,6 +4,8 @@ import { ApiPost } from "../../Framework/useApi/useApiPost";
 import Button from "../../Framework/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { ApiDelete } from "../../Framework/useApi/useApiDelete";
+import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 
 export interface BatimentInterface {
   id?: number;
@@ -13,6 +15,7 @@ export interface BatimentInterface {
   ville: string;
   codePostal: number;
   numeroTel: number;
+  etablissementId?: number;
 }
 
 export async function fetchBatiment() {
@@ -38,12 +41,14 @@ export function EditBatimentModal(props: {
   setBatimentSelected: React.Dispatch<
     React.SetStateAction<BatimentInterface | undefined>
   >;
+  setRefreshList: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const {
     isModalBatimentOpen,
     setIsModalBatimentOpen,
     batimentSelected,
     setBatimentSelected,
+    setRefreshList,
   } = props;
 
   const [formData, setFormData] = useState<BatimentInterface>(batimentSelected);
@@ -63,8 +68,18 @@ export function EditBatimentModal(props: {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                // todo soumission du form
-                ApiPost("/api/batiment", formData);
+                ApiPut("/api/batiments/" + formData.id, {
+                  id: formData.id,
+                  libelle: formData.libelle,
+                  numVoie: formData.numVoie,
+                  rue: formData.rue,
+                  ville: formData.ville,
+                  codePostal: formData.codePostal,
+                  numeroTel: formData.numeroTel,
+                  etablissementId: formData.etablissementId ?? 1,
+                });
+                setRefreshList((prev) => prev + 1);
+                setIsModalBatimentOpen(false);
               }}
             >
               <div className="mb-4">
@@ -85,7 +100,7 @@ export function EditBatimentModal(props: {
                 </label>
                 <input
                   type="text"
-                  name="num_voie"
+                  name="numVoie"
                   value={formData.numVoie}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
@@ -121,7 +136,7 @@ export function EditBatimentModal(props: {
                 </label>
                 <input
                   type="number"
-                  name="code_postal"
+                  name="codePostal"
                   value={formData.codePostal}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
@@ -133,32 +148,27 @@ export function EditBatimentModal(props: {
                 </label>
                 <input
                   type="number"
-                  name="numero_tel"
+                  name="numeroTel"
                   value={formData.numeroTel}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
               </div>
+              <div className="modal-action">
+                <button
+                  onClick={() => {
+                    setIsModalBatimentOpen(false);
+                    setBatimentSelected(undefined);
+                  }}
+                  className="btn"
+                >
+                  Annuler
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Enregistrer
+                </button>
+              </div>
             </form>
-          </div>
-          <div className="modal-action">
-            <button
-              onClick={() => {
-                setIsModalBatimentOpen(false);
-                setBatimentSelected(undefined);
-              }}
-              className="btn"
-            >
-              Annuler
-            </button>
-            <button
-              onClick={() => {
-                setIsModalBatimentOpen(false);
-              }}
-              className="btn btn-primary"
-            >
-              Enregistrer
-            </button>
           </div>
         </div>
       </div>
@@ -169,8 +179,13 @@ export function EditBatimentModal(props: {
 export function CreateBatimentModal(props: {
   showModalCreateBatiment: boolean;
   setShowModalCreateBatiment: React.Dispatch<React.SetStateAction<boolean>>;
+  setRefreshList: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const { setShowModalCreateBatiment, showModalCreateBatiment } = props;
+  const {
+    setShowModalCreateBatiment,
+    showModalCreateBatiment,
+    setRefreshList,
+  } = props;
 
   const [formData, setFormData] = useState<BatimentInterface>({
     libelle: "",
@@ -179,6 +194,7 @@ export function CreateBatimentModal(props: {
     ville: "",
     codePostal: 0,
     numeroTel: 0,
+    etablissementId: 1,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -196,10 +212,10 @@ export function CreateBatimentModal(props: {
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
-                // todo soumission du form
                 const response = await ApiPost("/api/batiments", formData);
                 if (response) {
                   setShowModalCreateBatiment(false);
+                  setRefreshList((prev) => prev + 1);
                 }
               }}
             >
@@ -221,7 +237,7 @@ export function CreateBatimentModal(props: {
                 </label>
                 <input
                   type="text"
-                  name="num_voie"
+                  name="numVoie"
                   value={formData.numVoie}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
@@ -257,7 +273,7 @@ export function CreateBatimentModal(props: {
                 </label>
                 <input
                   type="number"
-                  name="code_postal"
+                  name="codePostal"
                   value={formData.codePostal}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
@@ -269,30 +285,24 @@ export function CreateBatimentModal(props: {
                 </label>
                 <input
                   type="number"
-                  name="numero_tel"
+                  name="numeroTel"
                   value={formData.numeroTel}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
               </div>
+              <div className="modal-action">
+                <button
+                  onClick={() => setShowModalCreateBatiment(false)}
+                  className="btn"
+                >
+                  Annuler
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Enregistrer
+                </button>
+              </div>
             </form>
-          </div>
-          <div className="modal-action">
-            <button
-              onClick={() => setShowModalCreateBatiment(false)}
-              className="btn"
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              onClick={() => {
-                // Traitez la soumission de modifications ici
-              }}
-              className="btn btn-primary"
-            >
-              Enregistrer
-            </button>
           </div>
         </div>
       </div>
@@ -310,7 +320,7 @@ export function BatimentListCard() {
     BatimentInterface | undefined
   >(undefined);
   const [isModalBatimentOpen, setIsModalBatimentOpen] = useState(false);
-  const [batimentName, setBatimentName] = useState<string>("");
+  const [refreshList, setRefreshList] = useState(0);
 
   useEffect(() => {
     async function loadData() {
@@ -318,44 +328,20 @@ export function BatimentListCard() {
       setBatiment(loadedBatiment);
     }
     loadData();
-  }, []);
+  }, [refreshList]);
 
   // * Fonctions
   const handleModifierBatiment = (batimentSelected: BatimentInterface) => {
-    if (!batimentSelected) return;
     setBatimentSelected(batimentSelected);
     setIsModalBatimentOpen(true);
   };
-  const closeModalCreateBatiment = () => setShowModalCreateBatiment(false);
 
-  const handleSubmitBatiment = async (data: any) => {
-    const newBatiment = await createBatiment(data);
-    if (!newBatiment) {
-      alert("Un erreur est survenue lors de la création");
-      return;
-    }
-    setBatiment((prev) => [...prev, newBatiment]);
-    closeModalCreateBatiment();
-    setBatimentName("");
-  };
-
-  const handleAddBatiment = async () => {
-    if (batimentName.trim() === "") {
-      alert("Veuillez saisir un nom de batiment.");
-      return;
-    }
-
-    await handleSubmitBatiment({ name: batimentName });
-  };
   const handleSupprimerBatiment = (batimentSelected: BatimentInterface) => {
     if (!batimentSelected) return;
-    if (!window.confirm("êtes vous sur de vouloir supprimer ce batiment ?"))
+    if (!window.confirm("Êtes vous sur de vouloir supprimer ce batiment ?"))
       return;
-    setBatiment(
-      batimentList.filter((batiment) => batiment.id !== batimentSelected.id)
-    );
-    // todo appel api pour supprimer le batiment
-    ApiPost("/api/batiment/delete", batimentSelected);
+    ApiDelete("/api/batiments/" + batimentSelected.id);
+    setRefreshList((prev) => prev + 1);
   };
 
   return (
@@ -407,6 +393,7 @@ export function BatimentListCard() {
         <CreateBatimentModal
           showModalCreateBatiment={showModalCreateBatiment}
           setShowModalCreateBatiment={setShowModalCreateBatiment}
+          setRefreshList={setRefreshList}
         />
         {batimentSelected && (
           <EditBatimentModal
@@ -414,6 +401,7 @@ export function BatimentListCard() {
             setIsModalBatimentOpen={setIsModalBatimentOpen}
             batimentSelected={batimentSelected}
             setBatimentSelected={setBatimentSelected}
+            setRefreshList={setRefreshList}
           />
         )}
       </div>
