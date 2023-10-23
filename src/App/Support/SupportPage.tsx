@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { ApiGet } from "../../Framework/useApi/useApiGet";
 import { formatDate } from "fullcalendar";
 import { TicketEditModal } from "./TicketEditModal";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 export interface TicketInterface {
   id: number;
@@ -121,13 +123,13 @@ export function SupportPage() {
                   className="btn btn-outline btn-accent"
                   onClick={() => handleEditTicket(ticket)}
                 >
-                  Consulter
+                  <EditIcon />
                 </button>
                 <button
                   className="btn btn-outline btn-error"
                   onClick={() => handleDeleteTicket(ticket.id)}
                 >
-                  Supprimer
+                  <DeleteIcon />
                 </button>
               </td>
             </tr>
