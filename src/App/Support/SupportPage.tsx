@@ -120,6 +120,7 @@ export function SupportPage() {
                 >
                   <EditIcon />
                 </button>
+                {"‎ ‎ "}
                 <button
                   className="btn btn-outline btn-error"
                   onClick={() => handleDeleteTicket(ticket.id)}

@@ -162,6 +162,7 @@ export function EditCampusModal(props: {
                 >
                   Annuler
                 </button>
+                  {"‎ ‎ "}
                 <button type="submit" className="btn btn-primary">
                   Enregistrer
                 </button>
@@ -292,6 +293,7 @@ export function CreateCampusModal(props: {
                 >
                   Annuler
                 </button>
+                  {"‎ ‎ "}
                 <button
                   type="submit"
                   className="btn btn-primary"
@@ -346,13 +348,13 @@ export function CampusListCard() {
     <div className="card">
       <div className="card-header">
         <h2>Gestion des Campus</h2>
-        <Button
+        <button className="btn btn-primary"
           onClick={() => {
             openModalCreateCampus();
           }}
         >
           Ajouter un campus
-        </Button>
+        </button>
       </div>
       <div className="card-content">
         <div className="bidule">
@@ -376,6 +378,7 @@ export function CampusListCard() {
                     >
                       <EditIcon />
                     </button>
+                  {"‎ ‎ "}
                     <button
                       className="btn btn-outline btn-error"
                       onClick={() => handleSupprimerCampus(campus)}

@@ -6,7 +6,7 @@ import { usePromoSelect } from "../Promotion/usePromoSelect";
 import { useRoomSelect } from "../Salle/useRoomSelect";
 
 export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
-  const [endDate, setEndDate] = useState<Date | null>(null); 
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedTrainer, setSelectedTrainer] = useState("");
   const [selectedModule, setSelectedModule] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
@@ -189,6 +189,7 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
         >
           Annuler
         </button>
+        {"‎ ‎ "}
         <button type="submit" className="btn btn-primary">
           Ajouter
         </button>

@@ -71,6 +71,7 @@ export function TicketEditModal({
             <button onClick={onClose} className="btn">
               Annuler
             </button>
+            {"‎ ‎ "}
             <button
               onClick={() => {
                 onEdit(formData);

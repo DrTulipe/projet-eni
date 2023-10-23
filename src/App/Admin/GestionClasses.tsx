@@ -83,13 +83,13 @@ export function ClasseList() {
     <div className="card">
       <div className="card-header">
         <h2>Gestion des Classes</h2>
-        <Button
+        <button className="btn btn-primary"
           onClick={() => {
             openModalCreateClasse();
           }}
         >
           Ajouter une classe
-        </Button>
+        </button>
       </div>
       <div className="card-content">
         <table className="table w-full">
@@ -112,6 +112,7 @@ export function ClasseList() {
                   >
                     <EditIcon />
                   </button>
+                  {"‎ ‎ "}
                   <button
                     className="btn btn-outline btn-error"
                     onClick={() => handleSupprimerClasse(classe.id)}
@@ -175,6 +176,7 @@ export function ClasseList() {
                     >
                       Annuler
                     </button>
+                  {"‎ ‎ "}
                     <button type="submit" className="btn btn-primary">
                       Enregistrer
                     </button>
@@ -245,6 +247,7 @@ export function ClasseList() {
                   >
                     Annuler
                   </button>
+                  {"‎ ‎ "}
                   <button type="submit" className="btn btn-primary">
                     Ajouter
                   </button>

@@ -39,12 +39,26 @@ export function Formations() {
     );
     handleRefresh();
   };
-console.log(formations)
+
+    const getCellStyle = (isAccepted?: boolean) => {
+    console.log("isAccepted", isAccepted)
+    if (isAccepted === true) return "rgb(42, 166, 154)";
+    if (isAccepted === false) return "rgb(248, 114, 114)";
+    return "";
+  };
+
+  // const getRowClass = (isAccepted?: boolean) => {
+  //   console.log("isAccepted", isAccepted)
+  //   if (isAccepted === true) return "bg-green-500";
+  //   if (isAccepted === false) return "bg-red-500";
+  //   return "";
+  // };
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl mb-4">
         Mes formations &nbsp;&nbsp;&nbsp;&nbsp;
-        <button onClick={handleRefresh} className="btn btn-outline mb-4">
+        <button onClick={handleRefresh} className="btn btn-primary">
           Rafraîchir
         </button>
       </h1>
@@ -81,7 +95,8 @@ console.log(formations)
                   {formation.dateFin &&
                     formatDate(new Date(formation.dateFin.toString()))}
                 </td>
-                <td>
+                <td style={{ backgroundColor: getCellStyle(formation.estAcceptee)}}>
+                {/* <td className={getRowClass(formation.estAcceptee)}> ne marche pas*/}
                   {formation.estAcceptee === null
                     ? "En attente"
                     : formation.estAcceptee === true
@@ -96,6 +111,7 @@ console.log(formations)
                     >
                       Accepter
                     </button>
+                    {"‎ ‎ "}
                     <button
                       className="btn btn-outline btn-error"
                       onClick={() => handleRefuserFormation(formation.id)}

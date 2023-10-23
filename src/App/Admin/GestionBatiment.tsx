@@ -164,6 +164,7 @@ export function EditBatimentModal(props: {
                 >
                   Annuler
                 </button>
+                  {"‎ ‎ "}
                 <button type="submit" className="btn btn-primary">
                   Enregistrer
                 </button>
@@ -298,6 +299,7 @@ export function CreateBatimentModal(props: {
                 >
                   Annuler
                 </button>
+                  {"‎ ‎ "}
                 <button type="submit" className="btn btn-primary">
                   Enregistrer
                 </button>
@@ -348,13 +350,13 @@ export function BatimentListCard() {
     <div className="card">
       <div className="card-header">
         <h2>Gestion des Batiments</h2>
-        <Button
+        <button className="btn btn-primary"
           onClick={() => {
             openModalCreateBatiment();
           }}
         >
           Ajouter un batiment
-        </Button>
+        </button>
       </div>
       <div className="card-content">
         <div className="bidule">
@@ -378,6 +380,7 @@ export function BatimentListCard() {
                     >
                       <EditIcon />
                     </button>
+                  {"‎ ‎ "}
                     <button
                       className="btn btn-outline btn-error"
                       onClick={() => handleSupprimerBatiment(batiment)}

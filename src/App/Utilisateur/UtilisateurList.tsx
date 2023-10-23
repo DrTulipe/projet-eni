@@ -64,14 +64,14 @@ export function UtilisateurList() {
     <div className="card">
       <div className="card-header">
         <h2>Gestion des Utilisateurs</h2>
-        <Button
+        <button
+          className="btn btn-primary"
           onClick={() => {
-            /* code pour ajouter un formateur */
             setShowModalCreateUtilisateur(true);
           }}
         >
           Ajouter un utilisateur
-        </Button>
+        </button>
       </div>
       <div className="card-content">
         <table className="table w-full">
@@ -86,7 +86,14 @@ export function UtilisateurList() {
             {utilisateurList.map((utilisateur) => (
               <tr key={utilisateur.id}>
                 <td>{utilisateur.nom + " " + utilisateur.prenom}</td>
-                <td>{(utilisateur.roles && utilisateur.roles[0] === "ROLE_ADMIN") ? "Responsable pédagogique" : (utilisateur.roles && utilisateur.roles[0] === "ROLE_RESPONSABLE_PLANNING") ? "Responsable Planning" : "Enseignant"}</td>
+                <td>
+                  {utilisateur.roles && utilisateur.roles[0] === "ROLE_ADMIN"
+                    ? "Responsable pédagogique"
+                    : utilisateur.roles &&
+                      utilisateur.roles[0] === "ROLE_RESPONSABLE_PLANNING"
+                    ? "Responsable Planning"
+                    : "Enseignant"}
+                </td>
                 <td className="action-column">
                   <button
                     className="btn btn-outline btn-accent"
@@ -94,6 +101,7 @@ export function UtilisateurList() {
                   >
                     <EditIcon />
                   </button>
+                  {"‎ ‎ "}
                   <button
                     className="btn btn-outline btn-error"
                     onClick={() => handleSupprimerUtilisateur(utilisateur.id)}

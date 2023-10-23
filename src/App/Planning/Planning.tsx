@@ -173,14 +173,15 @@ export function Planning() {
                 <div>Salle: {selectedEvent.salle.libelle}</div>
                 <div className="flex justify-end mt-4">
                   <button
+                    className="btn btn-primary"
                     onClick={handleCloseModalEdit}
-                    className="btn btn-secondary"
                   >
                     Annuler
                   </button>
+                  {"‎ ‎ "}
                   <button
+                    className="btn btn-primary"
                     onClick={handleDeleteFormation}
-                    className="btn btn-secondary"
                   >
                     Supprimer
                   </button>

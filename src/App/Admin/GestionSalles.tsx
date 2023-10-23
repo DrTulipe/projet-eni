@@ -102,6 +102,7 @@ export function EditSalleModal(props: {
                 >
                   Annuler
                 </button>
+                {"‎ ‎ "}
                 <button type="submit" className="btn btn-primary">
                   Enregistrer
                 </button>
@@ -182,6 +183,7 @@ export function CreateSalleModal(props: {
                 >
                   Annuler
                 </button>
+                {"‎ ‎ "}
                 <button type="submit" className="btn btn-primary">
                   Enregistrer
                 </button>
@@ -231,13 +233,14 @@ export function SalleListCard() {
     <div className="card">
       <div className="card-header">
         <h2>Gestion des Salles</h2>
-        <Button
+        <button
+          className="btn btn-primary"
           onClick={() => {
             openModalCreateSalle();
           }}
         >
           Ajouter une salle
-        </Button>
+        </button>
       </div>
       <div className="card-content">
         <div className="bidule">
@@ -261,6 +264,7 @@ export function SalleListCard() {
                     >
                       <EditIcon />
                     </button>
+                    {"‎ ‎ "}
                     <button
                       className="btn btn-outline btn-error"
                       onClick={() => handleSupprimerSalle(salle)}

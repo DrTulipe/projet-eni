@@ -120,6 +120,7 @@ export function EditModuleFormationModal(props: {
                 >
                   Annuler
                 </button>
+                  {"‎ ‎ "}
                 <button type="submit" className="btn btn-primary">
                   Enregistrer
                 </button>
@@ -218,6 +219,7 @@ export function CreateModuleFormationModal(props: {
                 >
                   Annuler
                 </button>
+                  {"‎ ‎ "}
                 <button type="submit" className="btn btn-primary">
                   Enregistrer
                 </button>
@@ -281,13 +283,13 @@ export function ModuleFormationListCard() {
     <div className="card">
       <div className="card-header">
         <h2>Gestion des Modules de Formation</h2>
-        <Button
+        <button className="btn btn-primary"
           onClick={() => {
             openModalCreateModuleFormation();
           }}
         >
           Ajouter un Module
-        </Button>
+        </button>
       </div>
       <div className="card-content">
         <div className="bidule">
@@ -322,6 +324,7 @@ export function ModuleFormationListCard() {
                       >
                         <EditIcon />
                       </button>
+                  {"‎ ‎ "}
                       <button
                         className="btn btn-outline btn-error"
                         onClick={() =>
