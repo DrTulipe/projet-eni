@@ -1,19 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { UtilisateurInterface } from "./Compte";
+import { RoleSelect } from "./SelectRole";
+import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 
 export function EditUtilisateurModal(props: {
   isModalUtilisateurOpen: boolean;
   setIsModalUtilisateurOpen: React.Dispatch<React.SetStateAction<boolean>>;
   utilisateurSelected: UtilisateurInterface;
+  setRefreshWidgetFormateur: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const {
     isModalUtilisateurOpen,
     setIsModalUtilisateurOpen,
     utilisateurSelected,
+    setRefreshWidgetFormateur,
   } = props;
   const [formData, setFormData] = useState<UtilisateurInterface>({
-    etablissement_id: 0,
     email: "",
     nom: "",
     prenom: "",
@@ -21,15 +24,31 @@ export function EditUtilisateurModal(props: {
     password: "",
   });
 
+  useEffect(() => {
+    if (utilisateurSelected) {
+      setFormData(utilisateurSelected);
+    }
+  }, [utilisateurSelected]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "roles") {
-      // todo : gestion roles
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    ApiPut("/api/utilisateurs/" + formData.id, {
+      etablissement_id: formData.etablissement_id,
+      email: formData.email,
+      nom: formData.nom,
+      prenom: formData.prenom,
+      password: "",
+      passwordNew: "",
+    });
+    setIsModalUtilisateurOpen(false);
+    setRefreshWidgetFormateur((prev) => prev + 1);
+  };
+  const singleRole = formData.roles[0] || "";
   if (!isModalUtilisateurOpen) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -37,17 +56,8 @@ export function EditUtilisateurModal(props: {
         <div className="modal-box">
           <h2 className="text-2xl font-semibold mb-4">Modifier Utilisateur</h2>
           <div>
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                // todo soumission du form
-                const response = await ApiPost("/api/campus", formData);
-                if (response) {
-                  setIsModalUtilisateurOpen(false);
-                }
-              }}
-            >
-              <div className="mb-4">
+            <form onSubmit={handleSubmit}>
+              {/* <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Etablissement ID:
                 </label>
@@ -58,7 +68,7 @@ export function EditUtilisateurModal(props: {
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
-              </div>
+              </div> */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Email:
@@ -99,16 +109,14 @@ export function EditUtilisateurModal(props: {
                 <label className="block text-sm font-medium text-gray-700">
                   Roles:
                 </label>
-                <input
-                  type="text"
-                  name="roles"
-                  // todo traiter affichage roles
-                  value={formData.roles.join(", ")}
-                  onChange={handleInputChange}
-                  className="input input-bordered w-full"
+                <RoleSelect
+                  selectedRole={singleRole}
+                  onRoleChange={(role) =>
+                    setFormData((prev) => ({ ...prev, roles: [role] }))
+                  }
                 />
               </div>
-              <div className="mb-4">
+              {/* <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Mot de passe:
                 </label>
@@ -119,23 +127,19 @@ export function EditUtilisateurModal(props: {
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
+              </div> */}
+              <div className="modal-action">
+                <button
+                  onClick={() => setIsModalUtilisateurOpen(false)}
+                  className="btn"
+                >
+                  Annuler
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Sauvegarder
+                </button>
               </div>
             </form>
-          </div>
-          <div className="modal-action">
-            <button
-              onClick={() => setIsModalUtilisateurOpen(false)}
-              className="btn"
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              onClick={() => {}}
-              className="btn btn-primary"
-            >
-              Enregistrer
-            </button>
           </div>
         </div>
       </div>

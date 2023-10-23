@@ -18,18 +18,6 @@ export function LoginPage() {
     error: null,
   });
 
-  useEffect(() => {
-    if (!apiResponse.result) return;
-    if (apiResponse.error) {
-      window.confirm("une erreur est survenue");
-    }
-    if (apiResponse.result.token) {
-      localStorage.setItem("token", apiResponse.result.token);
-      localStorage.setItem("isLogged", "true");
-      navigate("/"); // Redirige vers la page d'accueil
-    }
-  }, [apiResponse, navigate]);
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!emailRef.current || !passwordRef.current) {
@@ -44,8 +32,20 @@ export function LoginPage() {
       email: emailValue,
       password: passwordValue,
     });
-
     setApiResponse(response);
+
+    if (response.result && response.result.token) {
+      localStorage.setItem("token", response.result.token);
+      const isConnectionOK = await checkConnection();
+      if (isConnectionOK) {
+        localStorage.setItem("isLogged", "true");
+        navigate("/");
+      } else {
+        alert("Une erreur est survenue lors de la connexion");
+      }
+    } else {
+      alert("Une erreur est survenue lors de la connexion");
+    }
   };
 
   return (
@@ -83,39 +83,38 @@ export function LoginPage() {
 }
 
 // Fonction pour vérifier la connexion
-export function useCheckConnection() {
+export function useCheckConnection(loginStart?: boolean) {
   const isLogged = localStorage.getItem("isLogged");
 
   const navigate = useNavigate();
   useEffect(() => {
-    const checkConnection = async () => {
-      try {
-        const { error, result } = await ApiPost("/api/validate/token");
-
-        if (
-          result === null ||
-          !result.valid ||
-          result.valid !== true ||
-          error
-        ) {
-          console.log("Connection KO!");
-          localStorage.setItem("isLogged", "false");
-          navigate("/login");
-        } else {
-          localStorage.setItem("isLogged", "true");
-          localStorage.setItem("user", result.user);
-          console.log("Connection OK!", isLogged);
-        }
-      } catch (error) {
-        console.error("Erreur lors de la vérification de la connexion:", error);
-      }
-    };
-
     checkConnection();
-
-    const intervalId = setInterval(checkConnection, 10000); // 10000ms = 10s
-
-    // Nettoyer l'intervalle lorsque le composant est démonté
-    return () => clearInterval(intervalId);
+    if (!loginStart) {
+      const intervalId = setInterval(checkConnection, 60000);
+      return () => clearInterval(intervalId);
+    } // 10000ms = 10s
   }, []);
 }
+
+// Fonction pour vérifier la connexion
+async function checkConnection() {
+  try {
+    const { error, result } = await ApiPost("/api/validate/token");
+
+    if (result === null || !result.valid || result.valid !== true || error) {
+      console.log("Connection KO!");
+      localStorage.setItem("isLogged", "false");
+      return false;
+    } else {
+      localStorage.setItem("isLogged", "true");
+      localStorage.setItem("user", result.user);
+      console.log("Connection OK!");
+      return true;
+    }
+  } catch (error) {
+    console.error("Erreur lors de la vérification de la connexion:", error);
+    return false;
+  }
+}
+
+//... (reste du code de useCheckConnection)

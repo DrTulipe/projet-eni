@@ -8,8 +8,8 @@ export async function ApiGet(url: string) {
         Authorization: `Bearer ${token}`,
       },
     });
-
     const data = await response.json();
+    console.log("response", data)
     if (data && data.trace) return "ERROR";
     const parsedData = JSON.parse(data);
     return parsedData;

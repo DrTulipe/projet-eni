@@ -7,6 +7,7 @@ import { EditUtilisateurModal } from "./EditUtilisateurModal";
 import { fetchFormateurs, createFormateur } from "./GestionUtilisateurs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 
 export function UtilisateurList() {
   const [utilisateurSelected, setUtilisateurSelected] = useState<
@@ -21,7 +22,8 @@ export function UtilisateurList() {
   >([]);
   const [showModalCreateUtilisateur, setShowModalCreateUtilisateur] =
     useState<boolean>(false);
-  //charger les formateurs
+
+  const [refreshWidgetFormateur, setRefreshWidgetFormateur] = useState(0);
   useEffect(() => {
     async function loadData() {
       const loadedFormateurs = await fetchFormateurs();
@@ -29,7 +31,7 @@ export function UtilisateurList() {
     }
 
     loadData();
-  }, []);
+  }, [refreshWidgetFormateur]);
 
   const handleAddFormateur = async () => {
     if (formateurName.trim() === "") {
@@ -49,11 +51,8 @@ export function UtilisateurList() {
     if (!id) return;
     if (!window.confirm("Êtes vous sur de vouloir supprimer cet utilisateur ?"))
       return;
-    setUtilisateurList(
-      utilisateurList.filter((formateur) => formateur.id !== id)
-    );
-    ApiPost("/api/utilisateur/delete", id);
-    // todo appel api pour supprimer l'utilisateur
+    ApiDelete("/api/utilisateurs/" + id);
+    setRefreshWidgetFormateur((prev) => prev + 1);
   };
 
   const handleSubmitFormateur = async (data: any) => {
@@ -109,6 +108,7 @@ export function UtilisateurList() {
           isModalUtilisateurOpen={isModalUtilisateurOpen}
           setIsModalUtilisateurOpen={setIsModalUtilisateurOpen}
           utilisateurSelected={utilisateurSelected}
+          setRefreshWidgetFormateur={setRefreshWidgetFormateur}
         />
       )}
       <CreateUtilisateurModal

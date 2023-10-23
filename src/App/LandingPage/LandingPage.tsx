@@ -3,52 +3,49 @@ import BrandIconUrl from "../../../public/images-logo/PLANNING BY DAY Logo - Ori
 import planning from "../../../public/planificateur.png";
 import formations from "../../../public/planification.png";
 import { useNavigate } from "react-router";
+import { getUserInfo } from "../Router/AppConfigRouter";
 
 export function LandingPage() {
   const isLogged = localStorage.getItem("isLogged");
+  const userClean = getUserInfo();
+
   const navigate = useNavigate();
   if (!isLogged || isLogged === "false") return null;
+
   return (
     <Container noOverflow center>
-      {/* Parent div to manage layout */}
-      <div className="flex flex-wrap justify-between">
-        {/* prendre toute la largeur */}
-        <div className="w-full text-center mb-8">
-          <div>Bienvenue sur l'outil de gestion de planning collaboratif</div>
-          <img
-            className="w-80 mx-auto"
-            src={BrandIconUrl}
-            alt="Planning By Day"
-          />
-        </div>
-        <div className="card w-96 bg-base-100 shadow-xl mb-8">
-          <br />
-          <figure>
-            <img
-              style={{ maxWidth: "100px", maxHeight: "100px" }}
-              src={formations}
-              alt="Accéder aux formations"
-            />
-          </figure>
-          <div className="card-body">
-            <h2 className="card-title">Formations</h2>
-            <p>
-              Accéder à vos formations, gérez vos formations validées et celles
-              en attente de validation
-            </p>
-            <div className="card-actions justify-end">
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate("/formations")}
-              >
-                Aller à la gestion des formations
-              </button>
+      <div className="flex flex-wrap justify-between space-x-5">
+        {userClean !== "" &&
+          userClean?.roles &&
+          userClean?.roles[0] === "ROLE_USER" && (
+            <div className="card w-2/5 bg-base-100 shadow-xl mb-8">
+              <figure className="text-center">
+                <img
+                  style={{ maxWidth: "100px", maxHeight: "100px" }}
+                  src={formations}
+                  alt="Accéder aux formations"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title">Formations</h2>
+                <p>
+                  Accéder à vos formations, gérez vos formations validées et
+                  celles en attente de validation
+                </p>
+                <div className="card-actions justify-end">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => navigate("/formations")}
+                  >
+                    Aller à la gestion des formations
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <br />
-        <div className="card w-96 bg-base-100 shadow-xl mb-8">
-          <figure>
+          )}
+
+        <div className="card w-2/5 bg-base-100 shadow-xl mb-8">
+          <figure className="text-center">
             <img
               style={{ maxWidth: "100px", maxHeight: "100px" }}
               src={planning}

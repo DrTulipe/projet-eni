@@ -152,7 +152,7 @@ export function ClasseList() {
   };
 
   const handleModifierClasse = (id: number) => {
-    setClasses(classes.filter((formateur) => formateur.id !== id));
+    // setClasses(classes.filter((formateur) => formateur.id !== id));
     // todo modal de modification
   };
 

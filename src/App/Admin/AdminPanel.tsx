@@ -46,8 +46,8 @@ export function AdminPanel() {
                 <BatimentListCard />
               </>
             )}
-            <ModuleFormationListCard />
-            <SalleListCard />
+          <ModuleFormationListCard />
+          <SalleListCard />
           {/* <div className="card">
             <div className="card-header">
               <h2>Gestion des Abonnements</h2>
