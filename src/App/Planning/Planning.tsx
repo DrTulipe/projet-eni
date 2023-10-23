@@ -18,6 +18,7 @@ export interface EvenementInterface {
   dateDebut: Date;
   dateFin: Date;
   statut: { id: number; libelle: string };
+  estAcceptee?: boolean;
 }
 
 export function Planning() {

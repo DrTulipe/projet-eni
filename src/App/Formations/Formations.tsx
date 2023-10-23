@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { EvenementInterface } from "../Planning/Planning";
 import { ApiGet } from "../../Framework/useApi/useApiGet";
 import { getUserInfo } from "../Router/AppConfigRouter";
+import { ApiPatch } from "../../Framework/useApi/ApiPatch";
+import { formatDate } from "../../Framework/Date/parseDateToFR";
 
 export function Formations() {
   const userClean = getUserInfo();
@@ -25,15 +27,19 @@ export function Formations() {
   };
 
   const handleRefuserFormation = (id: number) => {
-    setFormations(formations.filter((formation) => formation.id !== id));
-    // todo appel api pour enregistrer le statut refusé
+    ApiPatch(
+      "/api/sessions/" + id + "/utilisateur/" + userClean.id + "/choix?choix=0"
+    );
+    handleRefresh();
   };
 
   const handleAccepterFormation = (id: number) => {
-    setFormations(formations.filter((formation) => formation.id !== id));
-    // todo appel api pour enregistrer le statut accepté
+    ApiPatch(
+      "/api/sessions/" + id + "/utilisateur/" + userClean.id + "/choix?choix=1"
+    );
+    handleRefresh();
   };
-
+console.log(formations)
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl mb-4">
@@ -51,6 +57,7 @@ export function Formations() {
             <th>Salle</th>
             <th>Date Début</th>
             <th>Date Fin</th>
+            <th>Statut</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -66,11 +73,22 @@ export function Formations() {
                 </td>
                 <td>{formation.classe.libelle}</td>
                 <td>{formation.salle.libelle}</td>
-                <td>{formation.dateDebut.toString()}</td>
-                <td>{formation.dateFin.toString()}</td>
-                {/* //todo : masquer les boutons si le statut est déjà renseigné */}
-                {/* {formation.statut.id === 6 && ( */}
-                {
+                <td>
+                  {formation.dateDebut &&
+                    formatDate(new Date(formation.dateDebut.toString()))}
+                </td>
+                <td>
+                  {formation.dateFin &&
+                    formatDate(new Date(formation.dateFin.toString()))}
+                </td>
+                <td>
+                  {formation.estAcceptee === null
+                    ? "En attente"
+                    : formation.estAcceptee === true
+                    ? "Acceptée"
+                    : "Refusée"}
+                </td>
+                {formation.estAcceptee === null && (
                   <td>
                     <button
                       className="btn btn-outline btn-accent"
@@ -85,7 +103,7 @@ export function Formations() {
                       Refuser
                     </button>
                   </td>
-                }
+                )}
               </tr>
             ))}
         </tbody>

@@ -22,6 +22,16 @@ export function Navbar() {
             alt="Planning By Day"
           />
         </a>
+        {isLogged === "true" && (
+          <div>
+            <b>
+              {"Connecté en tant que : " +
+                userClean.nom +
+                " " +
+                userClean.prenom}
+            </b>
+          </div>
+        )}
       </div>
       <div className="flex-none">
         {isLogged === "true" ? (
