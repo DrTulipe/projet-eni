@@ -8,6 +8,7 @@ import { Container } from "../../Framework/Container/Container";
 import { FilterToolBarPlanning } from "./FilterToolBarPlanning";
 import { PlanningCreateEvent } from "./PlanningCreateEvent";
 import { ApiGet } from "../../Framework/useApi/useApiGet";
+import { getUserInfo } from "../Router/AppConfigRouter";
 
 export interface EvenementInterface {
   id: number;
@@ -22,6 +23,7 @@ export interface EvenementInterface {
 }
 
 export function Planning() {
+  const userClean = getUserInfo();
   const token = localStorage.getItem("token");
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModalEditOpen, setModalEditOpen] = useState(false);
@@ -35,6 +37,7 @@ export function Planning() {
     setRefreshCount((prev) => prev + 1);
   };
   const handleDateClick = (arg: any) => {
+    if (userClean.roles[0] === "ROLE_USER") return;
     setSelectedDate(arg.date);
     setModalOpen(true);
   };
@@ -179,12 +182,14 @@ export function Planning() {
                     Annuler
                   </button>
                   {"‎ ‎ "}
-                  <button
-                    className="btn btn-primary"
-                    onClick={handleDeleteFormation}
-                  >
-                    Supprimer
-                  </button>
+                  {userClean.roles[0] !== "ROLE_USER" && (
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleDeleteFormation}
+                    >
+                      Supprimer
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
