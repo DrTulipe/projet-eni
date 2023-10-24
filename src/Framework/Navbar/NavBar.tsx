@@ -45,7 +45,7 @@ export function Navbar() {
                       navigate("/admin");
                     }}
                   >
-                    Admin
+                    Administration
                   </a>
                 </li>
               )}
@@ -60,7 +60,7 @@ export function Navbar() {
             </li>
             {userClean !== "" &&
               userClean?.roles &&
-              userClean?.roles[0] !== "ROLE_USER" && (
+              userClean?.roles[0] === "ROLE_ADMIN" && (
                 <li>
                   <a
                     onClick={() => {
@@ -86,15 +86,19 @@ export function Navbar() {
                     Mon compte
                   </a>
                 </li>
-                <li>
-                  <a
-                    onClick={() => {
-                      navigate("/formations");
-                    }}
-                  >
-                    Mes formations
-                  </a>
-                </li>
+                {userClean !== "" &&
+                  userClean?.roles &&
+                  userClean?.roles[0] === "ROLE_USER" && (
+                    <li>
+                      <a
+                        onClick={() => {
+                          navigate("/formations");
+                        }}
+                      >
+                        Mes formations
+                      </a>
+                    </li>
+                  )}
                 <li>
                   <a
                     onClick={() => {

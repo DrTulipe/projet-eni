@@ -44,6 +44,7 @@ export function EditUtilisateurModal(props: {
       prenom: formData.prenom,
       password: "",
       passwordNew: "",
+      roles: formData.roles[0],
     });
     setIsModalUtilisateurOpen(false);
     setRefreshWidgetFormateur((prev) => prev + 1);
@@ -93,17 +94,17 @@ export function EditUtilisateurModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
-              <div className="mb-4">
+              {formData.roles[0] !== "ROLE_ADMIN" && <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Roles:
-                </label>
+                </label> 
                 <RoleSelect
                   selectedRole={singleRole}
                   onRoleChange={(role) =>
                     setFormData((prev) => ({ ...prev, roles: [role] }))
                   }
                 />
-              </div>
+              </div>}
               <div className="modal-action">
                 <button
                   onClick={() => setIsModalUtilisateurOpen(false)}

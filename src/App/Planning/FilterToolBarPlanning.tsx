@@ -17,10 +17,23 @@ export function FilterToolBarPlanning(props: {
   const selectPromoTab = usePromoSelect();
   const [selectedCampus, setSelectedCampus] = useState("");
   const selectCampusTab = useCampusSelect();
+  const [declencherRecherche, setDeclencherRecherche] = useState(0);
 
   useEffect(() => {
-    setRefreshCount((prev: number) => prev + 1);
-  }, [selectedTrainer, selectedPromo, selectedCampus]);
+    if (
+      selectedCampus !== "-1" ||
+      selectedPromo !== "-1" ||
+      selectedTrainer !== "-1"
+    ) {
+      setRefreshCount({
+        etablissementId: selectedCampus !== "-1" ? selectedCampus : null,
+        classeId: selectedPromo !== "-1" ? selectedPromo : null,
+        utilisateurId: selectedTrainer !== "-1" ? selectedTrainer : null,
+      });
+    } else {
+      setRefreshCount(Math.floor(Math.random() * (100 - 1 + 1)) + 1);
+    }
+  }, [declencherRecherche]);
 
   return (
     <FilterBar>
@@ -83,13 +96,7 @@ export function FilterToolBarPlanning(props: {
       </select>
       <button
         className="btn btn-outline mb-4"
-        onClick={() =>
-          setRefreshCount({
-            etablissementId: selectedCampus,
-            classeId: selectedPromo,
-            utilisateurId: selectedTrainer,
-          })
-        }
+        onClick={() => setDeclencherRecherche((prev) => prev + 1)}
       >
         Rechercher
       </button>

@@ -5,14 +5,21 @@ import formations from "../../../public/planification.png";
 import reglages from "../../../public/reglages.png";
 import { useNavigate } from "react-router";
 import { getUserInfo } from "../Router/AppConfigRouter";
+import { useEffect } from "react";
 
 export function LandingPage() {
   const isLogged = localStorage.getItem("isLogged");
   const userClean = getUserInfo();
 
   const navigate = useNavigate();
-  if (!isLogged || isLogged === "false") return null;
 
+  useEffect(() => {
+    if (!isLogged || isLogged === "false") {
+      navigate("/login");
+    }
+  }, [isLogged]);
+
+  if (!isLogged || isLogged === "false") return null;
   return (
     <Container noOverflow center>
       <div className="flex flex-wrap justify-between space-x-5">

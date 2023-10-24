@@ -38,7 +38,14 @@ export function CreateUtilisateurModal(props: {
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
-                const response = await ApiPost("/api/utilisateurs", formData);
+                const response = await ApiPost("/api/utilisateurs", {
+                  etablissementId : formData.etablissementId,
+                  email : formData.email,
+                  nom : formData.nom,
+                  prenom : formData.prenom,
+                  roles : formData.roles[0],
+                  password : formData.password,
+                });
                 if (response) {
                   setShowModalCreateUtilisateur(false);
                   setRefreshWidgetFormateur((prev) => prev + 1);

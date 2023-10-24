@@ -29,7 +29,7 @@ export async function createCampus(data: CampusInterface) {
     console.error("Erreur lors de la création du campus:", error);
     return null;
   }
-
+  console.log("result", result);
   return result;
 }
 
@@ -162,7 +162,7 @@ export function EditCampusModal(props: {
                 >
                   Annuler
                 </button>
-                  {"‎ ‎ "}
+                {"‎ ‎ "}
                 <button type="submit" className="btn btn-primary">
                   Enregistrer
                 </button>
@@ -293,11 +293,8 @@ export function CreateCampusModal(props: {
                 >
                   Annuler
                 </button>
-                  {"‎ ‎ "}
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                >
+                {"‎ ‎ "}
+                <button type="submit" className="btn btn-primary">
                   Enregistrer
                 </button>
               </div>
@@ -324,6 +321,7 @@ export function CampusListCard() {
   useEffect(() => {
     async function loadData() {
       const loadedCampus: CampusInterface[] = await fetchCampus();
+      console.log("loadedCampus", loadedCampus);
       setCampus(loadedCampus);
     }
     loadData();
@@ -343,12 +341,13 @@ export function CampusListCard() {
     ApiDelete("/api/etablissements/" + campusSelected.id);
     setRefreshList((prev) => prev + 1);
   };
-
+  console.log("campusList", campusList);
   return (
     <div className="card">
       <div className="card-header">
         <h2>Gestion des Campus</h2>
-        <button className="btn btn-primary"
+        <button
+          className="btn btn-primary"
           onClick={() => {
             openModalCreateCampus();
           }}
@@ -367,27 +366,32 @@ export function CampusListCard() {
               </tr>
             </thead>
             <tbody>
-              {campusList.map((campus) => (
-                <tr key={campus.id}>
-                  <td>{campus.libelle}</td>
-                  <td>{campus.ville}</td>
-                  <td className="action-column">
-                    <button
-                      className="btn btn-outline btn-accent"
-                      onClick={() => handleModifierCampus(campus)}
-                    >
-                      <EditIcon />
-                    </button>
-                  {"‎ ‎ "}
-                    <button
-                      className="btn btn-outline btn-error"
-                      onClick={() => handleSupprimerCampus(campus)}
-                    >
-                      <DeleteIcon />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {campusList &&
+                campusList.map((campus) => (
+                  <tr key={campus.id}>
+                    <td>{campus.libelle}</td>
+                    <td>{campus.ville}</td>
+                    <td className="action-column">
+                      {campus.id !== 1 && (
+                        <>
+                          <button
+                            className="btn btn-outline btn-accent"
+                            onClick={() => handleModifierCampus(campus)}
+                          >
+                            <EditIcon />
+                          </button>
+                          {"‎ ‎ "}
+                          <button
+                            className="btn btn-outline btn-error"
+                            onClick={() => handleSupprimerCampus(campus)}
+                          >
+                            <DeleteIcon />
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
