@@ -60,7 +60,7 @@ export function Navbar() {
             </li>
             {userClean !== "" &&
               userClean?.roles &&
-              userClean?.roles[0] === "ROLE_ADMIN" && (
+              userClean?.roles[0] !== "ROLE_USER" && (
                 <li>
                   <a
                     onClick={() => {
