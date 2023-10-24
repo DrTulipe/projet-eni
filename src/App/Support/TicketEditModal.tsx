@@ -15,7 +15,6 @@ export function TicketEditModal({
   onEdit,
 }: TicketEditModalProps) {
   const [formData, setFormData] = useState<TicketInterface>(ticket);
-
   useEffect(() => {
     setFormData(ticket);
   }, [ticket]);

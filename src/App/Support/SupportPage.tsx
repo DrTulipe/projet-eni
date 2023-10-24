@@ -4,6 +4,10 @@ import { formatDate } from "fullcalendar";
 import { TicketEditModal } from "./TicketEditModal";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { ApiDelete } from "../../Framework/useApi/useApiDelete";
+import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
+import { ApiPost } from "../../Framework/useApi/useApiPost";
+import { getUserInfo } from "../Router/AppConfigRouter";
 
 export interface TicketInterface {
   id: number;
@@ -16,17 +20,20 @@ export interface TicketInterface {
 }
 
 export function SupportPage() {
+  const userClean = getUserInfo();
   const [tickets, setTickets] = useState<TicketInterface[]>([]);
   const [newTicket, setNewTicket] = useState<TicketInterface>({
     id: 0,
     statut: { id: 0, libelle: "" },
-    utilisateurId: 0,
-    etablissementId: 0,
+    utilisateurId: userClean.id,
+    etablissementId: 1,
     sujet: "",
     message: "",
     dateEnvoi: null,
   });
   const [showCreate, setShowCreate] = useState(false);
+  const [refreshList, setRefreshList] = useState(0);
+
   useEffect(() => {
     const fetchTickets = async () => {
       const result: TicketInterface[] = await ApiGet("/api/tickets");
@@ -34,14 +41,20 @@ export function SupportPage() {
     };
 
     fetchTickets();
-  }, []);
+  }, [refreshList]);
 
   const handleAddTicket = () => {
+    ApiPost("/api/tickets", {
+      id: newTicket.id,
+      statutId: 2,
+      utilisateurId: newTicket.utilisateurId,
+      etablissementId: newTicket.etablissementId,
+      sujet: newTicket.sujet,
+      message: newTicket.message,
+      dateEnvoi: newTicket.dateEnvoi,
+    });
+    setRefreshList((prev) => prev + 1);
     setShowCreate(false);
-  };
-
-  const handleDeleteTicket = (id: number) => {
-    setTickets(tickets.filter((ticket) => ticket.id !== id));
   };
 
   // * Modification d'un ticket
@@ -56,9 +69,29 @@ export function SupportPage() {
   };
 
   const saveEditedTicket = (editedTicket: TicketInterface) => {
-    setTickets((prev) =>
-      prev.map((t) => (t.id === editedTicket.id ? editedTicket : t))
-    );
+    ApiPut("/api/tickets/" + editedTicket.id, {
+      id: editedTicket.id,
+      statutId: 2,
+      utilisateurId: editedTicket.utilisateurId,
+      etablissementId: editedTicket.etablissementId,
+      sujet: editedTicket.sujet,
+      message: editedTicket.message,
+      dateEnvoi: editedTicket.dateEnvoi,
+    });
+    setRefreshList((prev) => prev + 1);
+  };
+
+  const handleDeleteTicket = (ticket: TicketInterface) => {
+    if (!ticket) return;
+    ApiPut("/api/tickets/" + ticket.id, {
+      statutId: 4,
+      utilisateurId: ticket.utilisateurId,
+      etablissementId: ticket.etablissementId,
+      sujet: ticket.sujet,
+      message: ticket.message,
+      dateEnvoi: ticket.dateEnvoi,
+    });
+    setRefreshList((prev) => prev + 1);
   };
 
   return (
@@ -72,28 +105,30 @@ export function SupportPage() {
       </button>
 
       {showCreate && (
-        <div className="mb-4">
-          <input
-            type="text"
-            className="input input-bordered w-full mb-2"
-            value={newTicket?.sujet}
-            onChange={(e) =>
-              setNewTicket({ ...newTicket, sujet: e.target.value })
-            }
-            placeholder="Titre du ticket"
-          />
-          <textarea
-            className="textarea textarea-bordered w-full mb-2"
-            value={newTicket?.message}
-            onChange={(e) =>
-              setNewTicket({ ...newTicket, message: e.target.value })
-            }
-            placeholder="Contenu du ticket"
-          />
-          <button className="btn btn-success" onClick={handleAddTicket}>
-            Soumettre
-          </button>
-        </div>
+        <form onSubmit={handleAddTicket}>
+          <div className="mb-4">
+            <input
+              type="text"
+              className="input input-bordered w-full mb-2"
+              value={newTicket?.sujet}
+              onChange={(e) =>
+                setNewTicket({ ...newTicket, sujet: e.target.value })
+              }
+              placeholder="Titre du ticket"
+            />
+            <textarea
+              className="textarea textarea-bordered w-full mb-2"
+              value={newTicket?.message}
+              onChange={(e) =>
+                setNewTicket({ ...newTicket, message: e.target.value })
+              }
+              placeholder="Contenu du ticket"
+            />
+            <button className="btn btn-success" type="submit">
+              Soumettre
+            </button>
+          </div>
+        </form>
       )}
 
       <table className="table w-full">
@@ -123,7 +158,7 @@ export function SupportPage() {
                 {"‎ ‎ "}
                 <button
                   className="btn btn-outline btn-error"
-                  onClick={() => handleDeleteTicket(ticket.id)}
+                  onClick={() => handleDeleteTicket(ticket)}
                 >
                   <DeleteIcon />
                 </button>
