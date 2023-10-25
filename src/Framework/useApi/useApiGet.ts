@@ -3,7 +3,7 @@ export async function ApiGet(url: string, setLoading?: React.Dispatch<React.SetS
   if (setLoading) setLoading(true);
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch("http://optiplanning.ods-dual.fr"+url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
