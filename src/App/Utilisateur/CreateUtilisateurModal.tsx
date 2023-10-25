@@ -28,7 +28,7 @@ export function CreateUtilisateurModal(props: {
   };
   const singleRole = formData.roles[0] || "";
 
-  if (!showModalCreateUtilisateur) return;
+  if (!showModalCreateUtilisateur) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="modal modal-open">
