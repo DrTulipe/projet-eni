@@ -3,7 +3,7 @@ export async function ApiDelete(url: string) {
   try {
     const response = await fetch(url, {
       method: "DELETE",
-      headers: {
+      headers: { 
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },

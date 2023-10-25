@@ -3,7 +3,7 @@ export async function ApiPut(url: string, datas?: any) {
   try {
     const response = await fetch(url, {
       method: "PUT",
-      headers: {
+      headers: { 
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },

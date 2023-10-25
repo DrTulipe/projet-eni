@@ -3,7 +3,7 @@ export async function ApiPatch(url: string, datas?: any) {
   try {
     const response = await fetch(url, {
       method: "PATCH",
-      headers: {
+      headers: { 
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
