@@ -1,9 +1,7 @@
-import { apiurl } from "./useApiGet";
-
 export async function ApiPost(url: string, datas?: any) {
   const token = localStorage.getItem("token");
   try {
-    const response = await fetch(apiurl + url, {
+    const response = await fetch(url, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",

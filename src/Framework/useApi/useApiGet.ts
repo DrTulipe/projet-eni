@@ -1,11 +1,9 @@
-export const apiurl = "https://optiplanning.ods-dual.fr"
-
 export async function ApiGet(url: string, setLoading?: React.Dispatch<React.SetStateAction<boolean>>) {
   const token = localStorage.getItem("token");
   if (setLoading) setLoading(true);
  
   try {
-    const response = await fetch(apiurl + url, {
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

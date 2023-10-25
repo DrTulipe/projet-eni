@@ -1,9 +1,7 @@
-import { apiurl } from "./useApiGet";
-
 export async function ApiDelete(url: string) {
   const token = localStorage.getItem("token");
   try {
-    const response = await fetch(apiurl + url, {
+    const response = await fetch(url, {
       method: "DELETE",
       headers: { 
         "Content-Type": "application/json",
