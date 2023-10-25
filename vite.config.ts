@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://51.77.156.93/',
+        target: 'http://optiplanning.ods-dual.fr/api/',
         changeOrigin: true,
         secure: false,
         // rewrite: (path) => path.replace(/^\/api/, '')
