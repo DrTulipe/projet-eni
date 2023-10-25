@@ -7,7 +7,7 @@ import frLocale from "@fullcalendar/core/locales/fr";
 import { Container } from "../../Framework/Container/Container";
 import { FilterToolBarPlanning } from "./FilterToolBarPlanning";
 import { PlanningCreateEvent } from "./PlanningCreateEvent";
-import { ApiGet, apiurl } from "../../Framework/useApi/useApiGet";
+import { ApiGet } from "../../Framework/useApi/useApiGet";
 import { getUserInfo } from "../Router/AppConfigRouter";
 import { useLoading } from "../../Framework/LoaderOverlay";
 
@@ -50,7 +50,7 @@ export function Planning() {
     }
     if (!window.confirm("Êtes vous sur de vouloir supprimer cette formation ?"))
       return;
-    const route = apiurl + "/api/sessions/" + selectedEvent.id;
+    const route = "/api/sessions/" + selectedEvent.id;
     try {
       const response = await fetch(route, {
         method: "DELETE",
