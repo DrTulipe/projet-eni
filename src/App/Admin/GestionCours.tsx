@@ -7,11 +7,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { ModuleFormationInterface } from "../Formations/useModuleSelect";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 import TimePicker from "react-time-picker";
-
-export async function fetchModuleFormation() {
-  const result = await ApiGet("/api/modules");
-  return result;
-}
+import { useLoading } from "../../Framework/LoaderOverlay";
 
 export async function createModuleFormation(data: ModuleFormationInterface) {
   const { result, error } = await ApiPost("/api/modules", data);
@@ -75,11 +71,11 @@ export function EditModuleFormationModal(props: {
                 const date = new Date(
                   Date.UTC(1970, 0, 1, hours, minutes, 0, 0)
                 );
-                const formattedDate = date.toISOString();
+                // const formattedDate = date.toISOString();
                 date.setHours(hours, minutes, 0, 0);
                 const payload = {
                   ...formData,
-                  duree: formattedDate,
+                  duree: hours,
                 };
                 ApiPost("/api/modules", payload);
                 setRefreshList((prev) => prev + 1);
@@ -175,11 +171,11 @@ export function CreateModuleFormationModal(props: {
                 const date = new Date(
                   Date.UTC(1970, 0, 1, hours, minutes, 0, 0)
                 );
-                const formattedDate = date.toISOString();
+                // const formattedDate = date.toISOString();
                 date.setHours(hours, minutes, 0, 0);
                 const payload = {
                   ...formData,
-                  duree: formattedDate,
+                  duree: hours,
                 };
                 const response = await ApiPost("/api/modules", payload);
                 if (response) {
@@ -247,11 +243,12 @@ export function ModuleFormationListCard() {
   const [isModalModuleFormationOpen, setIsModalModuleFormationOpen] =
     useState(false);
   const [refreshList, setRefreshList] = useState<number>(0);
+  const { setLoading } = useLoading();
 
   useEffect(() => {
     async function loadData() {
       const loadedModuleFormation: ModuleFormationInterface[] =
-        await fetchModuleFormation();
+        await ApiGet("/api/modules", setLoading);
       setModuleFormation(loadedModuleFormation);
     }
     loadData();

@@ -7,23 +7,13 @@ import Button from "../../Framework/Button";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 import { selectClasses } from "@mui/material";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
+import { useLoading } from "../../Framework/LoaderOverlay";
 
 export interface ClasseInterface {
   id: number;
   libelle: string;
   nombreEleves: number;
   cursusId?: number;
-}
-
-export async function fetchClasses() {
-  const result = await ApiGet("/api/classes");
-
-  if (result === "ERROR") {
-    console.error("Erreur lors de la récupération des classes:");
-    return;
-  }
-
-  return result;
 }
 
 export function ClasseList() {
@@ -38,10 +28,11 @@ export function ClasseList() {
   const [showModalClasse, setShowModalClasse] = useState<boolean>(false);
   const [showModalClasseEdit, setShowModalClasseEdit] =
     useState<boolean>(false);
+    const { setLoading } = useLoading();
 
   useEffect(() => {
     async function loadData() {
-      const loadedClasses = await fetchClasses();
+      const loadedClasses = await ApiGet("/api/classes", setLoading);
       setClasses(loadedClasses);
     }
 

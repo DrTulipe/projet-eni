@@ -9,6 +9,7 @@ import { FilterToolBarPlanning } from "./FilterToolBarPlanning";
 import { PlanningCreateEvent } from "./PlanningCreateEvent";
 import { ApiGet } from "../../Framework/useApi/useApiGet";
 import { getUserInfo } from "../Router/AppConfigRouter";
+import { useLoading } from "../../Framework/LoaderOverlay";
 
 export interface EvenementInterface {
   id: number;
@@ -89,6 +90,7 @@ export function Planning() {
   };
 
   const [events, setEvents] = useState<any[]>([]);
+  const { setLoading } = useLoading();
 
   useEffect(() => {
     const fetchEvents = async (filters: any) => {
@@ -111,7 +113,8 @@ export function Planning() {
       }
 
       const result: EvenementInterface[] = await ApiGet(
-        `/api/sessions${queryParams}`
+        `/api/sessions${queryParams}`,
+        setLoading
       );
       const eventsForFullCalendar = convertToFullCalendarEvents(result);
       setEvents(eventsForFullCalendar);

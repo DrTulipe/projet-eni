@@ -8,6 +8,7 @@ import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { getUserInfo } from "../Router/AppConfigRouter";
+import { useLoading } from "../../Framework/LoaderOverlay";
 
 export interface TicketInterface {
   id: number;
@@ -33,10 +34,13 @@ export function SupportPage() {
   });
   const [showCreate, setShowCreate] = useState(false);
   const [refreshList, setRefreshList] = useState(0);
-
+  const { setLoading } = useLoading();
   useEffect(() => {
     const fetchTickets = async () => {
-      const result: TicketInterface[] = await ApiGet("/api/tickets");
+      const result: TicketInterface[] = await ApiGet(
+        "/api/tickets",
+        setLoading
+      );
       setTickets(result);
     };
 

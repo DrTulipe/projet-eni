@@ -6,14 +6,6 @@ import Button from "../../Framework/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-export async function fetchFormateurs() {
-  const result = await ApiGet("/api/utilisateurs");
-
-  if (result === "ERROR") return;
-
-  return result;
-}
-
 export async function createFormateur(data: any) {
   const { result, error } = await ApiPost("/api/utilisateur/create", data);
 

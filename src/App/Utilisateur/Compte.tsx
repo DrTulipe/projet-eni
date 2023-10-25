@@ -3,6 +3,7 @@ import { ApiGet } from "../../Framework/useApi/useApiGet";
 import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { getUserInfo } from "../Router/AppConfigRouter";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
+import { useLoading } from "../../Framework/LoaderOverlay";
 
 export interface UtilisateurInterface {
   id?: number;
@@ -30,11 +31,13 @@ export function Compte() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordNew, setShowPasswordNew] = useState(false);
+  const { setLoading } = useLoading();
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await ApiGet(
-        "/api/utilisateurs/" + (userClean !== "" ? userClean.id : "")
+        "/api/utilisateurs/" + (userClean !== "" ? userClean.id : ""),
+        setLoading
       );
       if (response) {
         setFormData({

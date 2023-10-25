@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
+import { useLoading } from "../../Framework/LoaderOverlay";
 
 export interface CampusInterface {
   id?: number;
@@ -17,10 +18,7 @@ export interface CampusInterface {
   numeroTel: number;
 }
 
-export async function fetchCampus() {
-  const result = await ApiGet("/api/etablissements");
-  return result;
-}
+
 
 export async function createCampus(data: CampusInterface) {
   const { result, error } = await ApiPost("/api/etablissements", data);
@@ -317,10 +315,11 @@ export function CampusListCard() {
   >(undefined);
   const [isModalCampusOpen, setIsModalCampusOpen] = useState(false);
   const [refreshList, setRefreshList] = useState(0);
+  const { setLoading } = useLoading();
 
   useEffect(() => {
     async function loadData() {
-      const loadedCampus: CampusInterface[] = await fetchCampus();
+      const loadedCampus: CampusInterface[] = await ApiGet("/api/etablissements", setLoading);
       console.log("loadedCampus", loadedCampus);
       setCampus(loadedCampus);
     }

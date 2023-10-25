@@ -4,11 +4,13 @@ import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { UtilisateurInterface } from "./Compte";
 import { CreateUtilisateurModal } from "./CreateUtilisateurModal";
 import { EditUtilisateurModal } from "./EditUtilisateurModal";
-import { fetchFormateurs, createFormateur } from "./GestionUtilisateurs";
+import { createFormateur } from "./GestionUtilisateurs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 import { roles } from "./SelectRole";
+import { useLoading } from "../../Framework/LoaderOverlay";
+import { ApiGet } from "../../Framework/useApi/useApiGet";
 
 export function UtilisateurList() {
   const [utilisateurSelected, setUtilisateurSelected] = useState<
@@ -25,9 +27,11 @@ export function UtilisateurList() {
     useState<boolean>(false);
 
   const [refreshWidgetFormateur, setRefreshWidgetFormateur] = useState(0);
+  const { setLoading } = useLoading();
+
   useEffect(() => {
     async function loadData() {
-      const loadedFormateurs = await fetchFormateurs();
+      const loadedFormateurs = await ApiGet("/api/utilisateurs", setLoading);
       setUtilisateurList(loadedFormateurs);
     }
 

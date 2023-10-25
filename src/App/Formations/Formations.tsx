@@ -4,17 +4,20 @@ import { ApiGet } from "../../Framework/useApi/useApiGet";
 import { getUserInfo } from "../Router/AppConfigRouter";
 import { ApiPatch } from "../../Framework/useApi/ApiPatch";
 import { formatDate } from "../../Framework/Date/parseDateToFR";
+import { useLoading } from "../../Framework/LoaderOverlay";
 
 export function Formations() {
   const userClean = getUserInfo();
   const [formations, setFormations] = useState<EvenementInterface[]>([]);
   const [refreshCount, setRefreshCount] = useState(0);
+  const { setLoading } = useLoading();
 
   useEffect(() => {
     const fetchEvents = async () => {
       const result = await ApiGet(
         "/api/sessions/filtres?utilisateurId=" +
-          (userClean !== "" ? userClean.id : "")
+          (userClean !== "" ? userClean.id : ""),
+        setLoading
       );
       if (result === "ERROR") return;
       setFormations(result);
@@ -40,8 +43,8 @@ export function Formations() {
     handleRefresh();
   };
 
-    const getCellStyle = (isAccepted?: boolean) => {
-    console.log("isAccepted", isAccepted)
+  const getCellStyle = (isAccepted?: boolean) => {
+    console.log("isAccepted", isAccepted);
     if (isAccepted === true) return "rgb(42, 166, 154)";
     if (isAccepted === false) return "rgb(248, 114, 114)";
     return "";
@@ -95,8 +98,12 @@ export function Formations() {
                   {formation.dateFin &&
                     formatDate(new Date(formation.dateFin.toString()))}
                 </td>
-                <td style={{ backgroundColor: getCellStyle(formation.estAcceptee)}}>
-                {/* <td className={getRowClass(formation.estAcceptee)}> ne marche pas*/}
+                <td
+                  style={{
+                    backgroundColor: getCellStyle(formation.estAcceptee),
+                  }}
+                >
+                  {/* <td className={getRowClass(formation.estAcceptee)}> ne marche pas*/}
                   {formation.estAcceptee === null
                     ? "En attente"
                     : formation.estAcceptee === true

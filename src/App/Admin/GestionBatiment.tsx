@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
+import { useLoading } from "../../Framework/LoaderOverlay";
 
 export interface BatimentInterface {
   id?: number;
@@ -16,11 +17,6 @@ export interface BatimentInterface {
   codePostal: number;
   numeroTel: number;
   etablissementId?: number;
-}
-
-export async function fetchBatiment() {
-  const result = await ApiGet("/api/batiments");
-  return result;
 }
 
 export async function createBatiment(data: BatimentInterface) {
@@ -323,10 +319,12 @@ export function BatimentListCard() {
   >(undefined);
   const [isModalBatimentOpen, setIsModalBatimentOpen] = useState(false);
   const [refreshList, setRefreshList] = useState(0);
+  const { setLoading } = useLoading();
 
   useEffect(() => {
     async function loadData() {
-      const loadedBatiment: BatimentInterface[] = await fetchBatiment();
+      const loadedBatiment: BatimentInterface[] = await ApiGet("/api/batiments", setLoading);
+
       setBatiment(loadedBatiment);
     }
     loadData();

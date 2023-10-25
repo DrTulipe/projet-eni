@@ -7,11 +7,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { SalleInterface } from "../Salle/useRoomSelect";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
-
-export async function fetchSalle() {
-  const result = await ApiGet("/api/salles");
-  return result;
-}
+import { useLoading } from "../../Framework/LoaderOverlay";
 
 export async function createSalle(data: SalleInterface) {
   const { result, error } = await ApiPost("/api/salles", data);
@@ -206,10 +202,11 @@ export function SalleListCard() {
   >(undefined);
   const [isModalSalleOpen, setIsModalSalleOpen] = useState(false);
   const [refreshList, setRefreshList] = useState<number>(0);
+  const { setLoading } = useLoading();
 
   useEffect(() => {
     async function loadData() {
-      const loadedSalle: SalleInterface[] = await fetchSalle();
+      const loadedSalle: SalleInterface[] = await ApiGet("/api/salles", setLoading);
       setSalle(loadedSalle);
     }
     loadData();
