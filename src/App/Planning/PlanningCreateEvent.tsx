@@ -3,7 +3,10 @@ import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { useUtilisateurSelect } from "../Utilisateur/utilisateurSelect";
 import { useModuleSelect } from "../Formations/useModuleSelect";
 import { usePromoSelect } from "../Promotion/usePromoSelect";
-import { useRoomSelect } from "../Salle/useRoomSelect";
+import { SalleInterface, useRoomSelect } from "../Salle/useRoomSelect";
+import { ApiGet } from "../../Framework/useApi/useApiGet";
+import { ClasseInterface } from "../Admin/GestionClasses";
+import { EvenementInterface } from "./Planning";
 
 export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -11,6 +14,13 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
   const [selectedModule, setSelectedModule] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedRoom, setSelectedRoom] = useState("");
+  const [blockSaveBecauseOfRoomSize, setBlockSaveBecauseOfRoomSize] =
+    useState<boolean>(false);
+
+  const [bloquerDateEnseignant, setBloquerDateEnseignant] =
+    useState<boolean>(false);
+  const [bloquerDateClasse, setBloquerDateClasse] = useState<boolean>(false);
+  const [bloquerDateSalle, setBloquerDateSalle] = useState<boolean>(false);
 
   const selectUserTab = useUtilisateurSelect();
   const selectModuleTab = useModuleSelect();
@@ -40,7 +50,7 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
       dateFin: endDate.toISOString(),
     };
 
-    const { result, error } = await ApiPost("/api/sessions", eventData);
+    const { error } = await ApiPost("/api/sessions", eventData);
 
     if (error) {
       alert("Une erreur est survenue lors de l'ajout de l'événement.");
@@ -53,6 +63,151 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
       setEndDate(null);
 
       onClose();
+    }
+  };
+
+  useEffect(() => {
+    if (selectedClass) {
+      checkClasseAvailability();
+    }
+    if (selectedRoom) {
+      // todo ajouter filtre coté back
+      // checkSalleAvailability();
+    }
+    if (!selectedClass && !selectedRoom) return;
+    checkClassSize();
+  }, [selectedClass, selectedRoom]);
+
+  useEffect(() => {
+    if (!selectedTrainer) return;
+    checkFormateurAvailability();
+  }, [selectedTrainer]);
+
+  const checkFormateurAvailability = async () => {
+    if (!selectedTrainer) return;
+
+    const dataPlanning: EvenementInterface[] = await ApiGet(
+      "/api/sessions/filtres?utilisateurId=" + selectedTrainer
+    );
+
+    if (dataPlanning) {
+      let isDateBlocked = false;
+
+      for (let i = 0; i < dataPlanning.length; i++) {
+        const event = dataPlanning[i];
+        const startDateFromEvents = new Date(event.dateDebut);
+        const endDateFromEvents = new Date(event.dateFin);
+        const checkSelectedDate = new Date(selectedDate);
+        const checkSelectedEndDate = new Date(endDate ?? new Date());
+
+        let currentCheckDate = new Date(checkSelectedDate);
+
+        while (currentCheckDate <= checkSelectedEndDate) {
+          if (
+            currentCheckDate >= startDateFromEvents &&
+            currentCheckDate <= endDateFromEvents
+          ) {
+            isDateBlocked = true;
+            break;
+          }
+          currentCheckDate.setDate(currentCheckDate.getDate() + 1); // Avancez d'un jour.
+        }
+
+        if (isDateBlocked) break;
+      }
+
+      setBloquerDateEnseignant(isDateBlocked);
+    }
+  };
+
+  // todo ajouter filtre coté back
+  // const checkSalleAvailability = async () => {
+  //   if (!selectedTrainer) return;
+
+  //   const dataPlanning: EvenementInterface[] = await ApiGet("/api/sessions");
+
+  //   if (dataPlanning) {
+  //     let isDateBlocked = false;
+
+  //     for (let i = 0; i < dataPlanning.length; i++) {
+  //       const event = dataPlanning[i];
+  //       const startDateFromEvents = new Date(event.dateDebut);
+  //       const endDateFromEvents = new Date(event.dateFin);
+  //       const checkSelectedDate = new Date(selectedDate);
+  //       const checkSelectedEndDate = new Date(endDate ?? new Date());
+
+  //       let currentCheckDate = new Date(checkSelectedDate);
+
+  //       while (currentCheckDate <= checkSelectedEndDate) {
+  //         if (
+  //           currentCheckDate >= startDateFromEvents &&
+  //           currentCheckDate <= endDateFromEvents
+  //         ) {
+  //           isDateBlocked = true;
+  //           break;
+  //         }
+  //         currentCheckDate.setDate(currentCheckDate.getDate() + 1); // Avancez d'un jour.
+  //       }
+
+  //       if (isDateBlocked) break;
+  //     }
+
+  //     setBloquerDateEnseignant(isDateBlocked);
+  //   }
+  // };
+
+  const checkClasseAvailability = async () => {
+    if (!selectedClass) return;
+
+    const dataPlanning: EvenementInterface[] = await ApiGet(
+      "/api/sessions/filtres?classeId=" + selectedClass
+    );
+
+    if (dataPlanning) {
+      let isDateBlocked = false;
+
+      for (let i = 0; i < dataPlanning.length; i++) {
+        const event = dataPlanning[i];
+        const startDateFromEvents = new Date(event.dateDebut);
+        const endDateFromEvents = new Date(event.dateFin);
+        const checkSelectedDate = new Date(selectedDate);
+        const checkSelectedEndDate = new Date(endDate ?? new Date());
+
+        let currentCheckDate = new Date(checkSelectedDate);
+
+        while (currentCheckDate <= checkSelectedEndDate) {
+          if (
+            currentCheckDate >= startDateFromEvents &&
+            currentCheckDate <= endDateFromEvents
+          ) {
+            isDateBlocked = true;
+            break;
+          }
+          currentCheckDate.setDate(currentCheckDate.getDate() + 1); // Avancez d'un jour.
+        }
+
+        if (isDateBlocked) break;
+      }
+
+      setBloquerDateClasse(isDateBlocked);
+    }
+  };
+
+  const checkClassSize = async () => {
+    if (!selectedClass || !selectedRoom) return;
+    const dataClasse: ClasseInterface = await ApiGet(
+      "/api/classes/" + selectedClass
+    );
+    const dataSalle: SalleInterface = await ApiGet(
+      "/api/salles/" + selectedRoom
+    );
+
+    if (dataClasse && dataSalle) {
+      if (dataClasse.nombreEleves > dataSalle.nbPlace) {
+        setBlockSaveBecauseOfRoomSize(true);
+      } else {
+        setBlockSaveBecauseOfRoomSize(false);
+      }
     }
   };
 
@@ -106,6 +261,11 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
           ))}
         </select>
       </div>
+      {bloquerDateClasse && (
+        <label className="border border-red-500 p-2 inline-block text-red-500">
+          La classe sélectionnée est déjà prise sur ce créneau
+        </label>
+      )}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2" htmlFor="room">
           Salle
@@ -130,6 +290,11 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
           ))}
         </select>
       </div>
+      {blockSaveBecauseOfRoomSize && (
+        <label className="border border-red-500 p-2 inline-block text-red-500">
+          Le nombre d'élèves dépasse la taille disponible dans la salle choisie
+        </label>
+      )}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2" htmlFor="trainer">
           Formateur
@@ -154,7 +319,11 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
           ))}
         </select>
       </div>
-
+      {bloquerDateEnseignant && (
+        <label className="border border-red-500 p-2 inline-block text-red-500">
+          L'enseignant sélectionné est déjà pris sur ce créneau
+        </label>
+      )}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2" htmlFor="start-date">
           Date de début
@@ -190,7 +359,15 @@ export function PlanningCreateEvent({ onSubmit, onClose, selectedDate }: any) {
           Annuler
         </button>
         {"‎ ‎ "}
-        <button type="submit" className="btn btn-primary">
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={
+            blockSaveBecauseOfRoomSize ||
+            bloquerDateEnseignant ||
+            bloquerDateClasse
+          }
+        >
           Ajouter
         </button>
       </div>

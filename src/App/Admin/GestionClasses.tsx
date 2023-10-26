@@ -8,6 +8,7 @@ import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 import { selectClasses } from "@mui/material";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 import { useLoading } from "../../Framework/LoaderOverlay";
+import { ChampRequis, champRequisVideBool } from "../../Framework/Input/Input";
 
 export interface ClasseInterface {
   id: number;
@@ -18,17 +19,20 @@ export interface ClasseInterface {
 
 export function ClasseList() {
   const [classes, setClasses] = useState<ClasseInterface[]>([]);
-  const [classeSelected, setClasseSelected] = useState<ClasseInterface>({
+
+  const defaultData: ClasseInterface = {
     id: 0,
     libelle: "",
     nombreEleves: 0,
     cursusId: 1,
-  });
+  };
+  const [classeSelected, setClasseSelected] =
+    useState<ClasseInterface>(defaultData);
   const [refreshList, setRefreshList] = useState<number>(0);
   const [showModalClasse, setShowModalClasse] = useState<boolean>(false);
   const [showModalClasseEdit, setShowModalClasseEdit] =
     useState<boolean>(false);
-    const { setLoading } = useLoading();
+  const { setLoading } = useLoading();
 
   useEffect(() => {
     async function loadData() {
@@ -46,13 +50,15 @@ export function ClasseList() {
 
   const handleEditClasseSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    ApiPut("/api/classes/" + classeSelected?.id, {
+    const response = await ApiPut("/api/classes/" + classeSelected?.id, {
       libelle: classeSelected?.libelle,
       nombreEleves: classeSelected?.nombreEleves,
       cursusId: 1,
     });
-    setShowModalClasseEdit(false);
-    setRefreshList((prev) => prev + 1);
+    if (response) {
+      setShowModalClasseEdit(false);
+      setRefreshList((prev) => prev + 1);
+    }
   };
 
   const handleSupprimerClasse = (id: number) => {
@@ -68,13 +74,17 @@ export function ClasseList() {
   };
 
   const openModalCreateClasse = () => setShowModalClasse(true);
-  const closeModalCreateClasse = () => setShowModalClasse(false);
+  const closeModalCreateClasse = () => {
+    setClasseSelected(defaultData);
+    setShowModalClasse(false);
+  };
 
   return (
     <div className="card">
       <div className="card-header">
         <h2>Gestion des Classes</h2>
-        <button className="btn btn-primary"
+        <button
+          className="btn btn-primary"
           onClick={() => {
             openModalCreateClasse();
           }}
@@ -140,6 +150,7 @@ export function ClasseList() {
                       required
                     />
                   </div>
+                  <ChampRequis fieldValue={classeSelected.libelle} />
                   <div className="mb-4">
                     <label
                       className="block text-sm font-medium mb-2"
@@ -148,7 +159,7 @@ export function ClasseList() {
                       Nombre de places
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       name="nombreEleves"
                       id="places"
                       value={classeSelected?.nombreEleves}
@@ -157,6 +168,13 @@ export function ClasseList() {
                       required
                     />
                   </div>
+                  {classeSelected.nombreEleves < 1 && (
+                    <>
+                      <label className="border border-red-500 p-2 m-1 inline-block text-red-500">
+                        Le nombre ne peut pas être inférieur à 1.
+                      </label>
+                    </>
+                  )}
                   <div className="flex justify-end">
                     <button
                       type="button"
@@ -167,8 +185,15 @@ export function ClasseList() {
                     >
                       Annuler
                     </button>
-                  {"‎ ‎ "}
-                    <button type="submit" className="btn btn-primary">
+                    {"‎ ‎ "}
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      disabled={
+                        classeSelected.nombreEleves < 1 ||
+                        champRequisVideBool(classeSelected.libelle)
+                      }
+                    >
                       Enregistrer
                     </button>
                   </div>
@@ -192,6 +217,7 @@ export function ClasseList() {
                   );
                   if (response) {
                     setShowModalClasse(false);
+                    setClasseSelected(defaultData);
                     setRefreshList((prev) => prev + 1);
                   }
                 }}
@@ -213,6 +239,7 @@ export function ClasseList() {
                     required
                   />
                 </div>
+                <ChampRequis fieldValue={classeSelected.libelle} />
                 <div className="mb-4">
                   <label
                     className="block text-sm font-medium mb-2"
@@ -230,6 +257,13 @@ export function ClasseList() {
                     required
                   />
                 </div>
+                {classeSelected.nombreEleves < 1 && (
+                  <>
+                    <label className="border border-red-500 p-2 m-1 inline-block text-red-500">
+                      Le nombre ne peut pas être inférieur à 1.
+                    </label>
+                  </>
+                )}
                 <div className="flex justify-end">
                   <button
                     type="button"
@@ -239,7 +273,14 @@ export function ClasseList() {
                     Annuler
                   </button>
                   {"‎ ‎ "}
-                  <button type="submit" className="btn btn-primary">
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={
+                      classeSelected.nombreEleves < 1 ||
+                      champRequisVideBool(classeSelected.libelle)
+                    }
+                  >
                     Ajouter
                   </button>
                 </div>

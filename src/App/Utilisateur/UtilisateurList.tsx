@@ -123,6 +123,7 @@ export function UtilisateurList() {
           isModalUtilisateurOpen={isModalUtilisateurOpen}
           setIsModalUtilisateurOpen={setIsModalUtilisateurOpen}
           utilisateurSelected={utilisateurSelected}
+          setUtilisateurSelected={setUtilisateurSelected}
           setRefreshWidgetFormateur={setRefreshWidgetFormateur}
         />
       )}

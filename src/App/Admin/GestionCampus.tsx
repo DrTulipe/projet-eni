@@ -7,18 +7,24 @@ import EditIcon from "@mui/icons-material/Edit";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 import { useLoading } from "../../Framework/LoaderOverlay";
+import {
+  ChampRequis,
+  InvalidCodePostalSize,
+  InvalidPhoneInfo,
+  champRequisVideBool,
+  invalidCodePostalBool,
+  invalidPhoneBool,
+} from "../../Framework/Input/Input";
 
 export interface CampusInterface {
   id?: number;
   libelle: string;
-  numVoie: number;
+  numVoie: string;
   rue: string;
   ville: string;
   codePostal: number;
   numeroTel: number;
 }
-
-
 
 export async function createCampus(data: CampusInterface) {
   const { result, error } = await ApiPost("/api/etablissements", data);
@@ -69,7 +75,7 @@ export function EditCampusModal(props: {
     setIsModalCampusOpen(false);
     setRefreshList((prev) => prev + 1);
   };
-
+  console.log(champRequisVideBool(formData.libelle));
   if (!isModalCampusOpen) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -90,6 +96,7 @@ export function EditCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.libelle} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Numéro de voie:
@@ -102,6 +109,7 @@ export function EditCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.numVoie} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Rue:
@@ -114,6 +122,7 @@ export function EditCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.rue} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Ville:
@@ -126,6 +135,7 @@ export function EditCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.ville} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Code Postal:
@@ -138,6 +148,7 @@ export function EditCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <InvalidCodePostalSize codePostal={formData.codePostal} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Numéro de téléphone:
@@ -150,6 +161,7 @@ export function EditCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <InvalidPhoneInfo phone={formData.numeroTel} />
               <div className="modal-action">
                 <button
                   onClick={() => {
@@ -161,7 +173,19 @@ export function EditCampusModal(props: {
                   Annuler
                 </button>
                 {"‎ ‎ "}
-                <button type="submit" className="btn btn-primary">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={
+                    // invalidCodePostalBool(formData.codePostal) ||
+                    // invalidPhoneBool(formData.numeroTel) ||
+                    champRequisVideBool(formData.libelle)
+                    //  ||
+                    // champRequisVideBool(formData.rue) ||
+                    // champRequisVideBool(formData.ville) ||
+                    // champRequisVideBool(formData.numVoie)
+                  }
+                >
                   Enregistrer
                 </button>
               </div>
@@ -181,14 +205,15 @@ export function CreateCampusModal(props: {
   const { setShowModalCreateCampus, showModalCreateCampus, setRefreshList } =
     props;
 
-  const [formData, setFormData] = useState<CampusInterface>({
+  const defaultData: CampusInterface = {
     libelle: "",
-    numVoie: 0,
+    numVoie: "",
     rue: "",
     ville: "",
     codePostal: 0,
     numeroTel: 0,
-  });
+  };
+  const [formData, setFormData] = useState<CampusInterface>(defaultData);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -207,6 +232,7 @@ export function CreateCampusModal(props: {
                 e.preventDefault();
                 const response = await createCampus(formData);
                 if (response) {
+                  setFormData(defaultData);
                   setShowModalCreateCampus(false);
                   setRefreshList((prev) => prev + 1);
                 }
@@ -224,6 +250,7 @@ export function CreateCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.libelle} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Numéro de voie:
@@ -236,6 +263,7 @@ export function CreateCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.numVoie} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Rue:
@@ -248,6 +276,7 @@ export function CreateCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.rue} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Ville:
@@ -260,6 +289,7 @@ export function CreateCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.ville} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Code Postal:
@@ -272,6 +302,7 @@ export function CreateCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <InvalidCodePostalSize codePostal={formData.codePostal} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Numéro de téléphone:
@@ -284,15 +315,30 @@ export function CreateCampusModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <InvalidPhoneInfo phone={formData.numeroTel} />
               <div className="modal-action">
                 <button
-                  onClick={() => setShowModalCreateCampus(false)}
+                  onClick={() => {
+                    setFormData(defaultData);
+                    setShowModalCreateCampus(false);
+                  }}
                   className="btn"
                 >
                   Annuler
                 </button>
                 {"‎ ‎ "}
-                <button type="submit" className="btn btn-primary">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={
+                    invalidCodePostalBool(formData.codePostal) ||
+                    invalidPhoneBool(formData.numeroTel) ||
+                    champRequisVideBool(formData.libelle) ||
+                    champRequisVideBool(formData.rue) ||
+                    champRequisVideBool(formData.ville) ||
+                    champRequisVideBool(formData.numVoie)
+                  }
+                >
                   Enregistrer
                 </button>
               </div>
@@ -319,7 +365,10 @@ export function CampusListCard() {
 
   useEffect(() => {
     async function loadData() {
-      const loadedCampus: CampusInterface[] = await ApiGet("/api/etablissements", setLoading);
+      const loadedCampus: CampusInterface[] = await ApiGet(
+        "/api/etablissements",
+        setLoading
+      );
       console.log("loadedCampus", loadedCampus);
       setCampus(loadedCampus);
     }
@@ -340,7 +389,6 @@ export function CampusListCard() {
     ApiDelete("/api/etablissements/" + campusSelected.id);
     setRefreshList((prev) => prev + 1);
   };
-  console.log("campusList", campusList);
   return (
     <div className="card">
       <div className="card-header">

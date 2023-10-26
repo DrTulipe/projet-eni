@@ -8,6 +8,7 @@ import { SalleInterface } from "../Salle/useRoomSelect";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 import { useLoading } from "../../Framework/LoaderOverlay";
+import { ChampRequis, champRequisVideBool } from "../../Framework/Input/Input";
 
 export async function createSalle(data: SalleInterface) {
   const { result, error } = await ApiPost("/api/salles", data);
@@ -76,6 +77,7 @@ export function EditSalleModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.libelle} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Nombre de places:
@@ -88,6 +90,11 @@ export function EditSalleModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              {formData.nbPlace < 1 && (
+                <label className="border border-red-500 p-2 inline-block text-red-500">
+                  Le nombre de places ne peut pas être inférieur à 1.
+                </label>
+              )}
               <div className="modal-action">
                 <button
                   onClick={() => {
@@ -99,7 +106,14 @@ export function EditSalleModal(props: {
                   Annuler
                 </button>
                 {"‎ ‎ "}
-                <button type="submit" className="btn btn-primary">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={
+                    formData.nbPlace < 1 ||
+                    champRequisVideBool(formData.libelle)
+                  }
+                >
                   Enregistrer
                 </button>
               </div>
@@ -118,13 +132,13 @@ export function CreateSalleModal(props: {
 }) {
   const { setShowModalCreateSalle, showModalCreateSalle, setRefreshList } =
     props;
-
-  const [formData, setFormData] = useState<SalleInterface>({
+  const defaultData: SalleInterface = {
     id: 0,
     libelle: "",
     nbPlace: 0,
     batimentId: 1,
-  });
+  };
+  const [formData, setFormData] = useState<SalleInterface>(defaultData);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -144,6 +158,7 @@ export function CreateSalleModal(props: {
                 const response = await ApiPost("/api/salles", formData);
                 if (response) {
                   setRefreshList((prev) => prev + 1);
+                  setFormData(defaultData);
                   setShowModalCreateSalle(false);
                 }
               }}
@@ -160,6 +175,7 @@ export function CreateSalleModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.libelle} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Nombre de places:
@@ -172,15 +188,30 @@ export function CreateSalleModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              {formData.nbPlace < 1 && (
+                <label className="border border-red-500 p-2 inline-block text-red-500">
+                  Le nombre de places ne peut pas être inférieur à 1.
+                </label>
+              )}
               <div className="modal-action">
                 <button
-                  onClick={() => setShowModalCreateSalle(false)}
+                  onClick={() => {
+                    setFormData(defaultData);
+                    setShowModalCreateSalle(false);
+                  }}
                   className="btn"
                 >
                   Annuler
                 </button>
                 {"‎ ‎ "}
-                <button type="submit" className="btn btn-primary">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={
+                    champRequisVideBool(formData.libelle) ||
+                    formData.nbPlace < 1
+                  }
+                >
                   Enregistrer
                 </button>
               </div>
@@ -206,7 +237,10 @@ export function SalleListCard() {
 
   useEffect(() => {
     async function loadData() {
-      const loadedSalle: SalleInterface[] = await ApiGet("/api/salles", setLoading);
+      const loadedSalle: SalleInterface[] = await ApiGet(
+        "/api/salles",
+        setLoading
+      );
       setSalle(loadedSalle);
     }
     loadData();

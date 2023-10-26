@@ -3,32 +3,37 @@ import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { UtilisateurInterface } from "./Compte";
 import { RoleSelect } from "./SelectRole";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
+import {
+  ChampRequis,
+  InvalidEmailInfo,
+  invalidEmailBool,
+} from "../../Framework/Input/Input";
 
 export function EditUtilisateurModal(props: {
   isModalUtilisateurOpen: boolean;
   setIsModalUtilisateurOpen: React.Dispatch<React.SetStateAction<boolean>>;
   utilisateurSelected: UtilisateurInterface;
   setRefreshWidgetFormateur: React.Dispatch<React.SetStateAction<number>>;
+  setUtilisateurSelected: React.Dispatch<
+    React.SetStateAction<UtilisateurInterface | undefined>
+  >;
 }) {
   const {
     isModalUtilisateurOpen,
     setIsModalUtilisateurOpen,
     utilisateurSelected,
     setRefreshWidgetFormateur,
+    setUtilisateurSelected,
   } = props;
-  const [formData, setFormData] = useState<UtilisateurInterface>({
-    email: "",
-    nom: "",
-    prenom: "",
-    roles: [],
-    password: "",
-  });
 
-  useEffect(() => {
-    if (utilisateurSelected) {
-      setFormData(utilisateurSelected);
-    }
-  }, [utilisateurSelected]);
+  const [formData, setFormData] =
+    useState<UtilisateurInterface>(utilisateurSelected);
+
+  // useEffect(() => {
+  //   if (utilisateurSelected) {
+  //     setFormData(utilisateurSelected);
+  //   }
+  // }, [utilisateurSelected]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -70,6 +75,7 @@ export function EditUtilisateurModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <InvalidEmailInfo email={formData.email} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Nom:
@@ -82,6 +88,7 @@ export function EditUtilisateurModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.nom} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Prénom:
@@ -94,26 +101,36 @@ export function EditUtilisateurModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
-              {formData.roles[0] !== "ROLE_ADMIN" && <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Roles:
-                </label> 
-                <RoleSelect
-                  selectedRole={singleRole}
-                  onRoleChange={(role) =>
-                    setFormData((prev) => ({ ...prev, roles: [role] }))
-                  }
-                />
-              </div>}
+              <ChampRequis fieldValue={formData.prenom} />
+              {formData.roles[0] !== "ROLE_ADMIN" && (
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Roles:
+                  </label>
+                  <RoleSelect
+                    selectedRole={singleRole}
+                    onRoleChange={(role) =>
+                      setFormData((prev) => ({ ...prev, roles: [role] }))
+                    }
+                  />
+                </div>
+              )}
               <div className="modal-action">
                 <button
-                  onClick={() => setIsModalUtilisateurOpen(false)}
+                  onClick={() => {
+                    setUtilisateurSelected(undefined);
+                    setIsModalUtilisateurOpen(false);
+                  }}
                   className="btn"
                 >
                   Annuler
                 </button>
                 {"‎ ‎ "}
-                <button type="submit" className="btn btn-primary">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={invalidEmailBool(formData.email)}
+                >
                   Sauvegarder
                 </button>
               </div>

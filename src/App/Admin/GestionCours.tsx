@@ -8,6 +8,8 @@ import { ModuleFormationInterface } from "../Formations/useModuleSelect";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 import TimePicker from "react-time-picker";
 import { useLoading } from "../../Framework/LoaderOverlay";
+import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
+import { ChampRequis, champRequisVideBool } from "../../Framework/Input/Input";
 
 export async function createModuleFormation(data: ModuleFormationInterface) {
   const { result, error } = await ApiPost("/api/modules", data);
@@ -59,7 +61,7 @@ export function EditModuleFormationModal(props: {
       <div className="modal modal-open">
         <div className="modal-box">
           <h2 className="text-2xl font-semibold mb-4">
-            Modifier ModuleFormation
+            Modifier un module de formation
           </h2>
           <div>
             <form
@@ -77,7 +79,7 @@ export function EditModuleFormationModal(props: {
                   ...formData,
                   duree: hours,
                 };
-                ApiPost("/api/modules", payload);
+                ApiPut("/api/modules/" + payload.id, payload);
                 setRefreshList((prev) => prev + 1);
                 setIsModalModuleFormationOpen(false);
               }}
@@ -94,6 +96,7 @@ export function EditModuleFormationModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.libelle} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Durée:
@@ -116,8 +119,12 @@ export function EditModuleFormationModal(props: {
                 >
                   Annuler
                 </button>
-                  {"‎ ‎ "}
-                <button type="submit" className="btn btn-primary">
+                {"‎ ‎ "}
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={champRequisVideBool(formData.libelle)}
+                >
                   Enregistrer
                 </button>
               </div>
@@ -141,12 +148,13 @@ export function CreateModuleFormationModal(props: {
     showModalCreateModuleFormation,
     setRefreshList,
   } = props;
-
-  const [formData, setFormData] = useState<ModuleFormationInterface>({
+  const defaultData: ModuleFormationInterface = {
     id: 0,
     libelle: "",
     duree: "00:00",
-  });
+  };
+  const [formData, setFormData] =
+    useState<ModuleFormationInterface>(defaultData);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -179,6 +187,7 @@ export function CreateModuleFormationModal(props: {
                 };
                 const response = await ApiPost("/api/modules", payload);
                 if (response) {
+                  setFormData(defaultData);
                   setShowModalCreateModuleFormation(false);
                   setRefreshList((prev) => prev + 1);
                 }
@@ -196,6 +205,7 @@ export function CreateModuleFormationModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.libelle} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Durée:
@@ -210,13 +220,20 @@ export function CreateModuleFormationModal(props: {
               </div>
               <div className="modal-action">
                 <button
-                  onClick={() => setShowModalCreateModuleFormation(false)}
+                  onClick={() => {
+                    setFormData(defaultData);
+                    setShowModalCreateModuleFormation(false);
+                  }}
                   className="btn"
                 >
                   Annuler
                 </button>
-                  {"‎ ‎ "}
-                <button type="submit" className="btn btn-primary">
+                {"‎ ‎ "}
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={champRequisVideBool(formData.libelle)}
+                >
                   Enregistrer
                 </button>
               </div>
@@ -247,8 +264,10 @@ export function ModuleFormationListCard() {
 
   useEffect(() => {
     async function loadData() {
-      const loadedModuleFormation: ModuleFormationInterface[] =
-        await ApiGet("/api/modules", setLoading);
+      const loadedModuleFormation: ModuleFormationInterface[] = await ApiGet(
+        "/api/modules",
+        setLoading
+      );
       setModuleFormation(loadedModuleFormation);
     }
     loadData();
@@ -280,7 +299,8 @@ export function ModuleFormationListCard() {
     <div className="card">
       <div className="card-header">
         <h2>Gestion des Modules de Formation</h2>
-        <button className="btn btn-primary"
+        <button
+          className="btn btn-primary"
           onClick={() => {
             openModalCreateModuleFormation();
           }}
@@ -321,7 +341,7 @@ export function ModuleFormationListCard() {
                       >
                         <EditIcon />
                       </button>
-                  {"‎ ‎ "}
+                      {"‎ ‎ "}
                       <button
                         className="btn btn-outline btn-error"
                         onClick={() =>

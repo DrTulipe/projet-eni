@@ -4,6 +4,12 @@ import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { getUserInfo } from "../Router/AppConfigRouter";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 import { useLoading } from "../../Framework/LoaderOverlay";
+import {
+  ChampRequis,
+  InvalidEmailInfo,
+  PasswordCheck,
+  passwordCheckBool,
+} from "../../Framework/Input/Input";
 
 export interface UtilisateurInterface {
   id?: number;
@@ -103,6 +109,7 @@ export function Compte() {
               className="input input-bordered w-full"
             />
           </div>
+          <ChampRequis fieldValue={formData?.nom} />
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
               Prénom :
@@ -115,6 +122,7 @@ export function Compte() {
               className="input input-bordered w-full"
             />
           </div>
+          <ChampRequis fieldValue={formData?.prenom} />
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
               Email :
@@ -127,6 +135,7 @@ export function Compte() {
               className="input input-bordered w-full"
             />
           </div>
+          <InvalidEmailInfo email={formData?.email} />
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
               Ancien Mot de passe :
@@ -169,7 +178,12 @@ export function Compte() {
               </button>
             </div>
           </div>
-          <button type="submit" className="btn btn-primary">
+          <PasswordCheck password={formData.passwordNew} />
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={passwordCheckBool(formData.passwordNew)}
+          >
             Sauvegarder
           </button>
         </form>

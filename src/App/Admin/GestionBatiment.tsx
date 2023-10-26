@@ -7,6 +7,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 import { useLoading } from "../../Framework/LoaderOverlay";
+import {
+  ChampRequis,
+  InvalidCodePostalSize,
+  InvalidPhoneInfo,
+  champRequisVideBool,
+  invalidCodePostalBool,
+  invalidPhoneBool,
+} from "../../Framework/Input/Input";
 
 export interface BatimentInterface {
   id?: number;
@@ -90,6 +98,7 @@ export function EditBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.libelle} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Numéro de voie:
@@ -102,6 +111,7 @@ export function EditBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.numVoie} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Rue:
@@ -114,6 +124,7 @@ export function EditBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.rue} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Ville:
@@ -126,6 +137,7 @@ export function EditBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.ville} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Code Postal:
@@ -138,6 +150,7 @@ export function EditBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <InvalidCodePostalSize codePostal={formData.codePostal} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Numéro de téléphone:
@@ -150,6 +163,7 @@ export function EditBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <InvalidPhoneInfo phone={formData.numeroTel} />
               <div className="modal-action">
                 <button
                   onClick={() => {
@@ -160,7 +174,7 @@ export function EditBatimentModal(props: {
                 >
                   Annuler
                 </button>
-                  {"‎ ‎ "}
+                {"‎ ‎ "}
                 <button type="submit" className="btn btn-primary">
                   Enregistrer
                 </button>
@@ -184,7 +198,7 @@ export function CreateBatimentModal(props: {
     setRefreshList,
   } = props;
 
-  const [formData, setFormData] = useState<BatimentInterface>({
+  const defaultData: BatimentInterface = {
     libelle: "",
     numVoie: "",
     rue: "",
@@ -192,7 +206,8 @@ export function CreateBatimentModal(props: {
     codePostal: 0,
     numeroTel: 0,
     etablissementId: 1,
-  });
+  };
+  const [formData, setFormData] = useState<BatimentInterface>(defaultData);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -212,6 +227,7 @@ export function CreateBatimentModal(props: {
                 const response = await ApiPost("/api/batiments", formData);
                 if (response) {
                   setShowModalCreateBatiment(false);
+                  setFormData(defaultData);
                   setRefreshList((prev) => prev + 1);
                 }
               }}
@@ -228,6 +244,7 @@ export function CreateBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.libelle} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Numéro de voie:
@@ -240,6 +257,7 @@ export function CreateBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.numVoie} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Rue:
@@ -252,6 +270,7 @@ export function CreateBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.rue} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Ville:
@@ -264,6 +283,7 @@ export function CreateBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.ville} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Code Postal:
@@ -276,6 +296,7 @@ export function CreateBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <InvalidCodePostalSize codePostal={formData.codePostal} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Numéro de téléphone:
@@ -288,15 +309,30 @@ export function CreateBatimentModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <InvalidPhoneInfo phone={formData.numeroTel} />
               <div className="modal-action">
                 <button
-                  onClick={() => setShowModalCreateBatiment(false)}
+                  onClick={() => {
+                    setFormData(defaultData);
+                    setShowModalCreateBatiment(false);
+                  }}
                   className="btn"
                 >
                   Annuler
                 </button>
-                  {"‎ ‎ "}
-                <button type="submit" className="btn btn-primary">
+                {"‎ ‎ "}
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={
+                    invalidCodePostalBool(formData.codePostal) ||
+                    invalidPhoneBool(formData.numeroTel) ||
+                    champRequisVideBool(formData.libelle) ||
+                    champRequisVideBool(formData.numVoie) ||
+                    champRequisVideBool(formData.rue) ||
+                    champRequisVideBool(formData.ville)
+                  }
+                >
                   Enregistrer
                 </button>
               </div>
@@ -323,7 +359,10 @@ export function BatimentListCard() {
 
   useEffect(() => {
     async function loadData() {
-      const loadedBatiment: BatimentInterface[] = await ApiGet("/api/batiments", setLoading);
+      const loadedBatiment: BatimentInterface[] = await ApiGet(
+        "/api/batiments",
+        setLoading
+      );
 
       setBatiment(loadedBatiment);
     }
@@ -348,7 +387,8 @@ export function BatimentListCard() {
     <div className="card">
       <div className="card-header">
         <h2>Gestion des Batiments</h2>
-        <button className="btn btn-primary"
+        <button
+          className="btn btn-primary"
           onClick={() => {
             openModalCreateBatiment();
           }}
@@ -378,7 +418,7 @@ export function BatimentListCard() {
                     >
                       <EditIcon />
                     </button>
-                  {"‎ ‎ "}
+                    {"‎ ‎ "}
                     <button
                       className="btn btn-outline btn-error"
                       onClick={() => handleSupprimerBatiment(batiment)}

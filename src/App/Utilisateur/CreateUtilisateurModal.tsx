@@ -2,6 +2,12 @@ import { useState } from "react";
 import { ApiPost } from "../../Framework/useApi/useApiPost";
 import { UtilisateurInterface } from "./Compte";
 import { RoleSelect } from "./SelectRole";
+import {
+  ChampRequis,
+  InvalidEmailInfo,
+  champRequisVideBool,
+  invalidEmailBool,
+} from "../../Framework/Input/Input";
 
 export function CreateUtilisateurModal(props: {
   showModalCreateUtilisateur: boolean;
@@ -13,14 +19,15 @@ export function CreateUtilisateurModal(props: {
     showModalCreateUtilisateur,
     setRefreshWidgetFormateur,
   } = props;
-  const [formData, setFormData] = useState<UtilisateurInterface>({
+  const defaultData: UtilisateurInterface = {
     etablissementId: 1,
     email: "",
     nom: "",
     prenom: "",
     roles: [],
     password: "Azerty123*",
-  });
+  };
+  const [formData, setFormData] = useState<UtilisateurInterface>(defaultData);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,14 +46,15 @@ export function CreateUtilisateurModal(props: {
               onSubmit={async (e) => {
                 e.preventDefault();
                 const response = await ApiPost("/api/utilisateurs", {
-                  etablissementId : formData.etablissementId,
-                  email : formData.email,
-                  nom : formData.nom,
-                  prenom : formData.prenom,
-                  roles : formData.roles[0],
-                  password : formData.password,
+                  etablissementId: formData.etablissementId,
+                  email: formData.email,
+                  nom: formData.nom,
+                  prenom: formData.prenom,
+                  roles: formData.roles[0],
+                  password: formData.password,
                 });
                 if (response) {
+                  setFormData(defaultData);
                   setShowModalCreateUtilisateur(false);
                   setRefreshWidgetFormateur((prev) => prev + 1);
                 }
@@ -63,6 +71,7 @@ export function CreateUtilisateurModal(props: {
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                 />
+                <InvalidEmailInfo email={formData.email} />
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
@@ -76,6 +85,7 @@ export function CreateUtilisateurModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.nom} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Prénom:
@@ -88,6 +98,7 @@ export function CreateUtilisateurModal(props: {
                   className="input input-bordered w-full"
                 />
               </div>
+              <ChampRequis fieldValue={formData.prenom} />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Roles:
@@ -101,13 +112,24 @@ export function CreateUtilisateurModal(props: {
               </div>
               <div className="modal-action">
                 <button
-                  onClick={() => setShowModalCreateUtilisateur(false)}
+                  onClick={() => {
+                    setFormData(defaultData);
+                    setShowModalCreateUtilisateur(false);
+                  }}
                   className="btn"
                 >
                   Annuler
                 </button>
-                  {"‎ ‎ "}
-                <button type="submit" className="btn btn-primary">
+                {"‎ ‎ "}
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={
+                    invalidEmailBool(formData.email) ||
+                    champRequisVideBool(formData.nom) ||
+                    champRequisVideBool(formData.prenom)
+                  }
+                >
                   Enregistrer
                 </button>
               </div>
