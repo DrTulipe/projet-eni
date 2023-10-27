@@ -9,7 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@fullcalendar/react": "^6.0.4",
+    "@mui/icons-material": "^5.14.14",
+    "@mui/material": "^5.14.14",
     "@types/jquery": "^3.5.16",
     "@types/moment": "^2.13.0",
     "classnames": "^2.3.2",
@@ -23,9 +27,11 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
     "react-router": "^6.7.0",
-    "react-router-dom": "^6.7.0"
+    "react-router-dom": "^6.7.0",
+    "react-time-picker": "^6.5.2"
   },
   "devDependencies": {
+    "@types/fullcalendar": "^3.8.0",
     "@types/ramda": "^0.28.21",
     "@types/react": "^18.0.26",
     "@types/react-calendar": "^3.9.0",

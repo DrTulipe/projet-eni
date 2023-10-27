@@ -1,0 +1,57 @@
+.admin-container {
+  margin: 2rem;
+}
+
+.admin-panel {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  height: 400px;
+  width: 45%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card-content {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.subscription {
+  flex: 1;
+  text-align: center;
+  margin: 0 10px;
+}
+
+.subscribe-btn {
+  margin-top: 10px;
+  background-color: #007BFF;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.subscribe-btn:hover {
+  background-color: #0056b3;
+}
+
+.action-column {
+  text-align: center;
+  width: 100px;
+}
