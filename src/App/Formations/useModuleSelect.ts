@@ -1,6 +1,6 @@
-
 import { useEffect, useState } from "react";
 import { ApiGet } from "../../Framework/useApi/useApiGet";
+import { isoToTime } from "../../Framework/Date/parseDateToFR";
 
 export interface ModuleFormationInterface {
   id: number;
@@ -9,7 +9,9 @@ export interface ModuleFormationInterface {
 }
 
 export function useModuleSelect() {
-  const [selectModuleTab, setSelectModuleTab] = useState<{ id: number; value: string }[]>([]);
+  const [selectModuleTab, setSelectModuleTab] = useState<
+    { id: number; value: string }[]
+  >([]);
 
   useEffect(() => {
     async function fetchTrainers() {
@@ -23,10 +25,12 @@ export function useModuleSelect() {
 
       if (!result) return;
 
-      const updatedSelectModuleTab = result.map((module: ModuleFormationInterface) => ({
-        id: module.id ?? 0,
-        value: `${module.libelle}`
-      }));
+      const updatedSelectModuleTab = result.map(
+        (module: ModuleFormationInterface) => ({
+          id: module.id ?? 0,
+          value: `${module.libelle + " - Durée : " + isoToTime(module.duree ?? "")}`,
+        })
+      );
 
       setSelectModuleTab(updatedSelectModuleTab);
     }
