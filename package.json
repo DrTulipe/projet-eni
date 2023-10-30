@@ -28,7 +28,8 @@
     "react-icons": "^4.7.1",
     "react-router": "^6.7.0",
     "react-router-dom": "^6.7.0",
-    "react-time-picker": "^6.5.2"
+    "react-time-picker": "^6.5.2",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@types/fullcalendar": "^3.8.0",

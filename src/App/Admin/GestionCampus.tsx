@@ -63,7 +63,7 @@ export function EditCampusModal(props: {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    ApiPut("/api/etablissements/" + formData.id, {
+    const result = await ApiPut("/api/etablissements/" + formData.id, {
       id: formData.id,
       libelle: formData.libelle,
       numVoie: formData.numVoie,
@@ -72,8 +72,10 @@ export function EditCampusModal(props: {
       codePostal: formData.codePostal,
       numeroTel: formData.numeroTel,
     });
-    setIsModalCampusOpen(false);
-    setRefreshList((prev) => prev + 1);
+    if (result) {
+      setRefreshList((prev) => prev + 1);
+      setIsModalCampusOpen(false);
+    }
   };
   console.log(champRequisVideBool(formData.libelle));
   if (!isModalCampusOpen) return null;

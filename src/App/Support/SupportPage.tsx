@@ -47,8 +47,8 @@ export function SupportPage() {
     fetchTickets();
   }, [refreshList]);
 
-  const handleAddTicket = () => {
-    ApiPost("/api/tickets", {
+  const handleAddTicket = async () => {
+    const result = await ApiPost("/api/tickets", {
       id: newTicket.id,
       statutId: 2,
       utilisateurId: newTicket.utilisateurId,
@@ -57,8 +57,10 @@ export function SupportPage() {
       message: newTicket.message,
       dateEnvoi: newTicket.dateEnvoi,
     });
-    setRefreshList((prev) => prev + 1);
-    setShowCreate(false);
+    if (result) {
+      setRefreshList((prev) => prev + 1);
+      setShowCreate(false);
+    }
   };
 
   // * Modification d'un ticket
@@ -72,8 +74,8 @@ export function SupportPage() {
     setShowEditModal(true);
   };
 
-  const saveEditedTicket = (editedTicket: TicketInterface) => {
-    ApiPut("/api/tickets/" + editedTicket.id, {
+  const saveEditedTicket = async (editedTicket: TicketInterface) => {
+    const response = await ApiPut("/api/tickets/" + editedTicket.id, {
       id: editedTicket.id,
       statutId: 2,
       utilisateurId: editedTicket.utilisateurId,
@@ -82,7 +84,9 @@ export function SupportPage() {
       message: editedTicket.message,
       dateEnvoi: editedTicket.dateEnvoi,
     });
-    setRefreshList((prev) => prev + 1);
+    if (response) {
+      setRefreshList((prev) => prev + 1);
+    }
   };
 
   const handleDeleteTicket = (ticket: TicketInterface) => {

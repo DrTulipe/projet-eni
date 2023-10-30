@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ApiGet } from "../../Framework/useApi/useApiGet";
 import { ApiPost } from "../../Framework/useApi/useApiPost";
-import Button from "../../Framework/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { ApiDelete } from "../../Framework/useApi/useApiDelete";
@@ -25,17 +24,6 @@ export interface BatimentInterface {
   codePostal: number;
   numeroTel: number;
   etablissementId?: number;
-}
-
-export async function createBatiment(data: BatimentInterface) {
-  const { result, error } = await ApiPost("/api/batiments", data);
-
-  if (error) {
-    console.error("Erreur lors de la création du batiment:", error);
-    return null;
-  }
-
-  return result;
 }
 
 export function EditBatimentModal(props: {
@@ -70,9 +58,9 @@ export function EditBatimentModal(props: {
           <h2 className="text-2xl font-semibold mb-4">Modifier Batiment</h2>
           <div>
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
-                ApiPut("/api/batiments/" + formData.id, {
+                const result = await ApiPut("/api/batiments/" + formData.id, {
                   id: formData.id,
                   libelle: formData.libelle,
                   numVoie: formData.numVoie,
@@ -82,8 +70,10 @@ export function EditBatimentModal(props: {
                   numeroTel: formData.numeroTel,
                   etablissementId: formData.etablissementId ?? 1,
                 });
-                setRefreshList((prev) => prev + 1);
-                setIsModalBatimentOpen(false);
+                if (result) {
+                  setRefreshList((prev) => prev + 1);
+                  setIsModalBatimentOpen(false);
+                }
               }}
             >
               <div className="mb-4">
