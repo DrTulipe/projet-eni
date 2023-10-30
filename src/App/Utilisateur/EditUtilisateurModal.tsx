@@ -42,7 +42,7 @@ export function EditUtilisateurModal(props: {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    ApiPut("/api/utilisateurs/" + formData.id, {
+    const result = await ApiPut("/api/utilisateurs/" + formData.id, {
       etablissement_id: formData.etablissementId,
       email: formData.email,
       nom: formData.nom,
@@ -51,8 +51,10 @@ export function EditUtilisateurModal(props: {
       passwordNew: "",
       roles: formData.roles[0],
     });
-    setIsModalUtilisateurOpen(false);
-    setRefreshWidgetFormateur((prev) => prev + 1);
+    if (result) {
+      setRefreshWidgetFormateur((prev) => prev + 1);
+      setIsModalUtilisateurOpen(false);
+    }
   };
   const singleRole = formData.roles[0] || "";
   if (!isModalUtilisateurOpen) return null;

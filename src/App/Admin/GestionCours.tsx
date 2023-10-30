@@ -38,8 +38,6 @@ export function EditModuleFormationModal(props: {
     setRefreshList,
   } = props;
 
-
-
   const [formData, setFormData] = useState<ModuleFormationInterface>({
     ...moduleFormationSelected,
     duree: moduleFormationSelected.duree
@@ -61,7 +59,7 @@ export function EditModuleFormationModal(props: {
           </h2>
           <div>
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 const [hours, minutes] = formData.duree
                   ? formData.duree.split(":").map(Number)
@@ -75,9 +73,14 @@ export function EditModuleFormationModal(props: {
                   ...formData,
                   duree: hours,
                 };
-                ApiPut("/api/modules/" + payload.id, payload);
-                setRefreshList((prev) => prev + 1);
-                setIsModalModuleFormationOpen(false);
+                const response = await ApiPut(
+                  "/api/modules/" + payload.id,
+                  payload
+                );
+                if (response) {
+                  setRefreshList((prev) => prev + 1);
+                  setIsModalModuleFormationOpen(false);
+                }
               }}
             >
               <div className="mb-4">
