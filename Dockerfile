@@ -1,4 +1,4 @@
 FROM nginx
-COPY ./dist/ /var/www/html
-COPY ./front.conf /etc/nginx/sites-enabled/front.conf
+COPY ./dist/ /usr/share/nginx/html
+COPY ./front.conf /etc/nginx/sites-available/default
 EXPOSE 80
