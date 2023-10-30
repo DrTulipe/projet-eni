@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://projet-eni-back:8000/',
+        target: 'http://projet-eni-back:8000/',
         changeOrigin: true,
         secure: false,
         // rewrite: (path) => path.replace(/^/api/, '')
