@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  projet-eni-front-dev:
+    build: ./
+    container_name: projet-eni-front-dev
+    networks:
+      - front
+    ports:
+      - "80:80"
+networks:
+  front:
+    name: front
+    driver: bridge
