@@ -79,9 +79,9 @@ export function Compte() {
     setShowPasswordNew(!showPasswordNew);
   };
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    ApiPut("/api/utilisateurs/" + (userClean !== "" ? userClean.id : ""), {
+    const response = await ApiPut("/api/utilisateurs/" + (userClean !== "" ? userClean.id : ""), {
       etablissement_id: formData.etablissementId,
       email: formData.email,
       nom: formData.nom,
@@ -90,6 +90,9 @@ export function Compte() {
       passwordNew: formData.passwordNew,
       roles: formData.roles[0],
     });
+    if(response) {
+      alert("Compte modifié avec succès");
+    }
   };
   if (!formData) return null;
   return (

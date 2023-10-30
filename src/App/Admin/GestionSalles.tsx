@@ -53,16 +53,18 @@ export function EditSalleModal(props: {
           <h2 className="text-2xl font-semibold mb-4">Modifier Salle</h2>
           <div>
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
-                ApiPut("/api/salles/" + formData.id, {
+                const response = await ApiPut("/api/salles/" + formData.id, {
                   id: formData.id,
                   libelle: formData.libelle,
                   nbPlace: formData.nbPlace,
                   batimentId: 1,
                 });
-                setRefreshList((prev) => prev + 1);
-                setIsModalSalleOpen(false);
+                if (response) {
+                  setRefreshList((prev) => prev + 1);
+                  setIsModalSalleOpen(false);
+                }
               }}
             >
               <div className="mb-4">
