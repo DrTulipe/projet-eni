@@ -21,12 +21,12 @@ export function FilterToolBarPlanning(props: {
 
   useEffect(() => {
     if (
-      selectedCampus !== "-1" ||
+      // selectedCampus !== "-1" ||
       selectedPromo !== "-1" ||
       selectedTrainer !== "-1"
     ) {
       setRefreshCount({
-        etablissementId: selectedCampus !== "-1" ? selectedCampus : null,
+        // etablissementId: selectedCampus !== "-1" ? selectedCampus : null,
         classeId: selectedPromo !== "-1" ? selectedPromo : null,
         utilisateurId: selectedTrainer !== "-1" ? selectedTrainer : null,
       });
@@ -37,7 +37,7 @@ export function FilterToolBarPlanning(props: {
 
   return (
     <FilterBar>
-      <select
+      {/* <select
         id="selectCampus"
         value={selectedCampus}
         onChange={(e) => setSelectedCampus(e.target.value)}
@@ -55,7 +55,7 @@ export function FilterToolBarPlanning(props: {
             {campus.value}
           </option>
         ))}
-      </select>
+      </select> */}
       <select
         id="selectPromo"
         value={selectedPromo}

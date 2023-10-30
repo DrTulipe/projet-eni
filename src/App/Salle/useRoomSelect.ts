@@ -27,7 +27,7 @@ export function useRoomSelect() {
 
       const updatedSelectRoomTab = result.map((room: SalleInterface) => ({
         id: room.id ?? 0,
-        value: `${room.libelle}`,
+        value: `${room.libelle + " - Places: " + room.nbPlace }`,
       }));
 
       setSelectRoomTab(updatedSelectRoomTab);

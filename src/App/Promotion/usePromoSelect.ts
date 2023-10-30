@@ -19,7 +19,7 @@ export function usePromoSelect() {
 
       const updatedSelectPromoTab = result.map((promo: ClasseInterface) => ({
         id: promo.id ?? 0,
-        value: `${promo.libelle}`
+        value: `${promo.libelle + " - Eleves : " + promo.nombreEleves}`
       }));
 
       setSelectPromoTab(updatedSelectPromoTab);

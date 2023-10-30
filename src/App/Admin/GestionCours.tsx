@@ -10,6 +10,7 @@ import TimePicker from "react-time-picker";
 import { useLoading } from "../../Framework/LoaderOverlay";
 import { ApiPut } from "../../Framework/useApi/useApiPut.ts";
 import { ChampRequis, champRequisVideBool } from "../../Framework/Input/Input";
+import { isoToTime } from "../../Framework/Date/parseDateToFR";
 
 export async function createModuleFormation(data: ModuleFormationInterface) {
   const { result, error } = await ApiPost("/api/modules", data);
@@ -37,12 +38,7 @@ export function EditModuleFormationModal(props: {
     setRefreshList,
   } = props;
 
-  const isoToTime = (isoString: string) => {
-    const date = new Date(isoString);
-    const hours = String(date.getUTCHours()).padStart(2, "0");
-    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
+
 
   const [formData, setFormData] = useState<ModuleFormationInterface>({
     ...moduleFormationSelected,
