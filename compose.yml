@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  projet-eni-front-dev:
+  projet-eni-front:
     build: ./
-    container_name: projet-eni-front-dev
+    container_name: projet-eni-front
     networks:
       - front
     ports:
